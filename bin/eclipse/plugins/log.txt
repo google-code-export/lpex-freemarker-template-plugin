@@ -3,4 +3,313 @@ New session
 =================================
 New session
 =================================
+INFO 10/17/2011 16:08      /**
+      *--------------------------------------------------------------------
+      * @brief 
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  
+      *
+      * @return 
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p NameSpace_...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d NameSpace_...
+     d                 pi              n
+     d  pr_...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p NameSpace_...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 16:08 {procedure={repeats=[{documentation=, name=, nameSpace=NameSpace, returnDescription=, description=}], documentation=, nameSpace=NameSpace, name=, description=, returnDescription=}, parameter={repeats=[{name=, description=}], name=, description=}}
+=================================
+New session
+=================================
+INFO 10/17/2011 16:39      /**
+      *--------------------------------------------------------------------
+      * @brief 
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  
+      *
+      * @return 
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p _...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d _...
+     d                 pi              n
+     d  pr_...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p _...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 16:39 {procedure={repeats=[{documentation=, name=, nameSpace=, returnDescription=, description=}], documentation=, nameSpace=, name=, description=, returnDescription=}, parameter={repeats=[{name=, description=}], name=, description=}}
+=================================
+New session
+=================================
+INFO 10/17/2011 16:42      /**
+      *--------------------------------------------------------------------
+      * @brief test
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  dsfsdf
+      *
+      * @return test
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p test_test...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d test_test...
+     d                 pi              n
+     d  pr_fsdflksjdf...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p test_test...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 16:42 {procedure={repeats=[{documentation=, name=test, nameSpace=test, returnDescription=test, description=test}], documentation=, nameSpace=test, name=test, description=test, returnDescription=test}, parameter={repeats=[{name=fsdflksjdf, description=dsfsdf}], name=fsdflksjdf, description=dsfsdf}}
+=================================
+New session
+=================================
+INFO 10/17/2011 16:56      /**
+      *--------------------------------------------------------------------
+      * @brief 
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  
+      *
+      * @return 
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p _...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d _...
+     d                 pi              n
+     d  pr_...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p _...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 16:56 {procedure={repeats=[{documentation=, name=, nameSpace=, returnDescription=, description=}], documentation=, nameSpace=, name=, description=, returnDescription=}, parameter={repeats=[{name=, description=}], name=, description=}}
+INFO 10/17/2011 16:57      /**
+      *--------------------------------------------------------------------
+      * @brief 
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  
+      *
+      * @return 
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p _...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d _...
+     d                 pi              n
+     d  pr_exampleParameterName...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p _...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 16:57 {procedure={repeats=[{documentation=, name=, nameSpace=, returnDescription=, description=}], documentation=, nameSpace=, name=, description=, returnDescription=}, parameter={repeats=[{name=exampleParameterName, description=}], name=exampleParameterName, description=}}
+=================================
+New session
+=================================
+INFO 10/17/2011 17:00      /**
+      *--------------------------------------------------------------------
+      * @brief sdsjs
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  parm0desc
+      *
+      * @return jiy
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p test_tdsfgdg...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d test_tdsfgdg...
+     d                 pi              n
+     d  pr_parm0...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p test_tdsfgdg...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 17:00 {procedure={repeats=[{documentation=, name=tdsfgdg, nameSpace=test, returnDescription=jiy, description=sdsjs}], documentation=, nameSpace=test, name=tdsfgdg, description=sdsjs, returnDescription=jiy}, parameter={repeats=[{name=parm0, description=parm0desc}], name=parm0, description=parm0desc}}
+=================================
+New session
+=================================
+INFO 10/17/2011 17:02      /**
+      *--------------------------------------------------------------------
+      * @brief 
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   10/17/2011
+      *
+      * @param  
+      *
+      * @return 
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p _...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d _...
+     d                 pi              n
+     d  pr_...
+     d                 s               n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p _...
+     p                 e
+      // END PROCEDURE
+INFO 10/17/2011 17:02 {procedure={repeats=[{documentation=, name=, nameSpace=, returnDescription=, description=}], documentation=, nameSpace=, name=, description=, returnDescription=}, parameter={repeats=[{name=, description=}], name=, description=}}
 =================================

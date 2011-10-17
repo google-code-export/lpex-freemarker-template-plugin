@@ -7,18 +7,40 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -154,33 +176,103 @@ public class Forms implements Serializable {
 		this.description = description;
 	}
 	
+	public void openAsFormDialog() {
+		try {
+			//Display display = PlatformUI.getWorkbench().getDisplay();
+			Shell parentShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			//TODO Figure out why it crashes here
+			TemplateFormDialog dialog = new TemplateFormDialog(parentShell);
+			dialog.create();
+			dialog.getShell().setSize(800, 600);
+			dialog.open();
+		} catch (Exception e) {
+			PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+		}
+	}
+	
 	public void open() {
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		Shell parentShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		
 		//Draw a dialog for each prompt group
 		for (PromptGroup promptGroup : promptGroups) {
-			try {
-				// Draw the prompt using SWT
-				final Shell shell = new Shell(parentShell, SWT.APPLICATION_MODAL);
-				shell.setSize(500, 300);
-				shell.setLocation(300, 300);
-				shell.setLayout(new GridLayout(2, false));
-				promptGroup.render(shell);
-
-				//Present to the user
-				shell.open();
-
-				while (!shell.isDisposed()) {
-					if (!display.readAndDispatch())
-						display.sleep();
-				}
-			} catch (Exception e) {
-				PluginLogger.logger.info("Failed to render the prompt group");
-				PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
-			}
+			displayDialog(promptGroup, 0);
 		}
 		
+	}
+	
+	private void displayDialog(final PromptGroup promptGroup, final Integer repeatIndex) {
+		try {
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			final Shell parentShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			
+			// Draw the prompt using SWT
+			final Shell shell = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+			shell.setSize(500, 300);
+			shell.setLocation(300, 300);
+			shell.setLayout(new GridLayout(2, false));
+
+			//Add an OK button
+			final Button buttonOK = new Button(shell, SWT.PUSH);
+			buttonOK.setText("OK");
+			//buttonOK.setBounds(20, 0, 80, 25);
+			GridData gridData = new GridData();
+			gridData.verticalAlignment = SWT.TOP;
+			buttonOK.setLayoutData(gridData);
+			shell.setDefaultButton(buttonOK);
+			buttonOK.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event event) {
+					if (event.widget == buttonOK) {
+						shell.close();
+					}
+				}
+			});
+			
+			//Show repeater button if needed
+			if (promptGroup.isRepeatable()) {
+				final Button buttonRepeat = new Button(shell, SWT.PUSH);
+				buttonRepeat.setText("Add another " + promptGroup.getName());
+				gridData.horizontalAlignment = GridData.FILL;
+				buttonRepeat.setLayoutData(gridData);
+				buttonRepeat.addListener(SWT.Selection, new Listener() {
+					public void handleEvent(Event event) {
+						if (event.widget == buttonRepeat) {
+							shell.close();
+							if (promptGroup.getMaxRepeats() < repeatIndex) {
+								displayDialog(promptGroup, repeatIndex + 1);
+							}
+						}
+					}
+				});
+			}else{
+				Label filler = new Label(shell, SWT.NONE);
+				filler.setLayoutData(gridData);
+			}
+
+			
+			// Enter key acts as the OK button
+			/*Control[] widgets = shell.getChildren();
+			for (int i = 0; i < widgets.length; i++) {
+				widgets[i].addKeyListener(new KeyAdapter() {
+					public void keyReleased(KeyEvent event) {
+						if (event.character == SWT.ESC) {
+							shell.close();
+						}
+					}
+				});
+			}*/
+
+			//Draw all of the input fields
+			promptGroup.render(shell);
+
+			//Present to the user
+			shell.open();
+
+			while (!shell.isDisposed()) {
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+		} catch (Exception e) {
+			PluginLogger.logger.info("Failed to render the prompt group");
+			PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+		}
 	}
 
     public final void handleReturnPress(Event e) {

@@ -18,7 +18,7 @@ public class PromptGroup implements Serializable {
 
 	public PromptGroup() {}
 
-	public PromptGroup(ArrayList<Prompt> prompts) {
+	public PromptGroup(ArrayList<Prompt> prompts) throws Exception {
 		setPrompts(prompts);
 	}
 
@@ -39,8 +39,8 @@ public class PromptGroup implements Serializable {
 	}
 
 	public void setRepeatable(String repeatable) {
-		if (repeatable.compareToIgnoreCase("true") == 0)
-		{
+		if ((repeatable.compareToIgnoreCase("yes") == 0) || 
+			(repeatable.compareToIgnoreCase("true") == 0)) {
 			setRepeatable(true);
 		}else{
 			setRepeatable(false);
@@ -71,20 +71,28 @@ public class PromptGroup implements Serializable {
 		return prompts;
 	}
 
-	public void setPrompts(ArrayList<Prompt> prompts) {
+	public void setPrompts(ArrayList<Prompt> prompts) throws Exception {
+		if ((this.name == "") || (this.name == null)) {
+			throw new Exception("Prompt group must have a name.");
+		}
+		for (Prompt p:prompts) {
+			p.setGroupPromptName(this.name);
+		}
 		this.prompts = prompts;
 	}
 
-	public void addPrompt(Prompt prompt) {
+	public void addPrompt(Prompt prompt) throws Exception {
+		if ((this.name == "") || (this.name == null)) {
+			throw new Exception("Prompt group must have a name.");
+		}
+		prompt.setGroupPromptName(this.name);
 		prompts.add(prompt);
 	}
 	
 	public Map<String, Object> getInitializedMap() {
 		Map<String, Object> initMap = new HashMap<String, Object>();
 		for (Prompt prompt:getPrompts()) {
-			//TODO Remove the value assigned here for testing
-			initMap.put(prompt.getName(), prompt.getHint());
-			//initMap.put(prompt.getName(), "");
+			initMap.put(prompt.getName(), "");
 		}
 		return initMap;
 	}

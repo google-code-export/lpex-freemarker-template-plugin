@@ -8,7 +8,8 @@ Bundle-Vendor: Rob Newton
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.ibm.lpex
+ com.ibm.lpex,
+ org.eclipse.ui.forms;bundle-version="3.5.2"
 Eclipse-LazyStart: true
 Export-Package: com.freemarker.lpex
 Bundle-ClassPath: freemarker.jar,

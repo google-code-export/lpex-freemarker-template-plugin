@@ -20,7 +20,7 @@ import freemarker.template.TemplateException;
 public class LPEXTemplate {
 	private Forms form = null;
 	private String templateText = null;
-	private Map<String, Object> formData = null;
+	public static Map<String, Object> formData = null;
 	private String result = null;
 	
 	public LPEXTemplate(String templateText) {
@@ -74,14 +74,6 @@ public class LPEXTemplate {
 			throw new Exception("Template form not loaded.");
 		}
 		return form;
-	}
-	
-	public Map<String, Object> getFormData() {
-		return formData;
-	}
-
-	public void setFormData(Map<String, Object> formData) {
-		this.formData = formData;
 	}
 
 	public String merge() throws TemplateException, IOException, Exception {

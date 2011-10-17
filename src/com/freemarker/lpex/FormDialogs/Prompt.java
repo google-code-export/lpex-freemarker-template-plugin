@@ -1,23 +1,32 @@
 package com.freemarker.lpex.FormDialogs;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import com.freemarker.lpex.Utils.PluginLogger;
 
 public class Prompt implements Serializable {
 
@@ -27,6 +36,8 @@ public class Prompt implements Serializable {
 		TEXT, DATE, MULTILINE, CHECKBOX
 	}
 
+	private String groupPromptName = "";
+	private Integer currentRepeat = 0;
 	private Object shell = null;
 	private Boolean isGrouped = false;
 	private InputType type = InputType.TEXT;
@@ -35,6 +46,7 @@ public class Prompt implements Serializable {
 	private String description = "";
 	private String hint = "";
 	private Object defaultValue = "";
+	private org.eclipse.swt.events.ModifyListener modifyTextListener;
 
 	public Prompt() {
 	}
@@ -45,6 +57,22 @@ public class Prompt implements Serializable {
 		setLabel(label);
 		setDescription(description);
 		setHint(hint);
+	}
+
+	public Integer getCurrentRepeat() {
+		return currentRepeat;
+	}
+
+	public void setCurrentRepeat(Integer currentRepeat) {
+		this.currentRepeat = currentRepeat;
+	}
+
+	public String getGroupPromptName() {
+		return groupPromptName;
+	}
+
+	public void setGroupPromptName(String groupPromptName) {
+		this.groupPromptName = groupPromptName;
 	}
 
 	public Object getShell() {
@@ -151,6 +179,26 @@ public class Prompt implements Serializable {
 		else if (this.type == InputType.MULTILINE) renderMultilineTextInput();
 		else if (this.type == InputType.CHECKBOX) renderCheckboxInput();
 		else if (this.type == InputType.DATE) renderDateInput();
+
+		// Create reusable modify listener for the generated fields
+		modifyTextListener = new org.eclipse.swt.events.ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				// Get the widget whose text was modified
+				Text text = (Text) event.widget;
+				String promptGroupName = (String) text.getData("promptGroupName");
+				String promptName = (String) text.getData("promptName");
+				Integer repeatIndex = (Integer) text.getData("repeatIndex");
+				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
+				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+				repeats.get(repeatIndex).put(promptName, text.getText());
+				// If it's the first item create the natural shortcuts to
+				// prevent having to use the repeats array when there is 
+				// only one item
+				if (repeatIndex == 0) {
+					promptGroup.put(promptName, text.getText());
+				}
+			}
+		};
 	}
 	
 	private void renderPromptLabel() {
@@ -206,6 +254,9 @@ public class Prompt implements Serializable {
 		gridData.verticalAlignment = SWT.TOP;
 		text.setLayoutData(gridData);
 		text.setToolTipText(hint);
+		text.setData("promptGroupName", groupPromptName);
+		text.setData("promptName", this.name);
+		text.setData("repeatIndex", 0);
 
 		//Choose to show the hint or the default value
 		try {
@@ -218,6 +269,26 @@ public class Prompt implements Serializable {
 				text.setText(defaultText);
 			}
 		} catch (Exception e) {}
+
+		//Add the listener to capture the data entered automatically
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				// Get the widget whose text was modified
+				Text text = (Text) event.widget;
+				String promptGroupName = (String) text.getData("promptGroupName");
+				String promptName = (String) text.getData("promptName");
+				Integer repeatIndex = (Integer) text.getData("repeatIndex");
+				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
+				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+				repeats.get(repeatIndex).put(promptName, text.getText());
+				// If it's the first item create the natural shortcuts to
+				// prevent having to use the repeats array when there is 
+				// only one item
+				if (repeatIndex == 0) {
+					promptGroup.put(promptName, text.getText());
+				}
+			}
+		});
 	}
 	
 	private void renderMultilineTextInput() {
@@ -235,6 +306,8 @@ public class Prompt implements Serializable {
 		gridData.grabExcessVerticalSpace = true;
 		text.setLayoutData(gridData);
 		text.setToolTipText(hint);
+		text.setData("promptGroupName", groupPromptName);
+		text.setData("promptName", this.name);
 		
 		//Choose to show the hint or the default value
 		try {
@@ -272,6 +345,8 @@ public class Prompt implements Serializable {
 		gridData.verticalAlignment = SWT.TOP;
 		checkbox.setLayoutData(gridData);
 		checkbox.setText(name);
+		checkbox.setData("promptGroupName", groupPromptName);
+		checkbox.setData("promptName", this.name);
 		try {
 			Boolean checked = (Boolean) defaultValue;
 			checkbox.setSelection(checked);
@@ -293,6 +368,8 @@ public class Prompt implements Serializable {
 		gridData.verticalAlignment = SWT.TOP;
 		date.setLayoutData(gridData);
 		date.setToolTipText(hint);
+		date.setData("promptGroupName", groupPromptName);
+		date.setData("promptName", this.name);
 		date.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("time changed");
@@ -322,4 +399,23 @@ public class Prompt implements Serializable {
             }
         });
     }
+    /*
+	private class ModifyListener {
+		public void modifyText(ModifyEvent event) {
+			// Get the widget whose text was modified
+			Text text = (Text) event.widget;
+			String promptGroupName = (String) text.getData("promptGroupName");
+			String promptName = (String) text.getData("promptName");
+			Integer repeatIndex = (Integer) text.getData("repeatIndex");
+			Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
+			ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+			repeats.get(repeatIndex).put(promptName, text.getText());
+			// If it's the first item create the natural shortcuts to prevent
+			// having
+			// to use the repeats array when there is only one item
+			if (repeatIndex == 0) {
+				promptGroup.put(promptName, text.getText());
+			}
+		}
+	}*/
 }

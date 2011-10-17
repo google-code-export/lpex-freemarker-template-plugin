@@ -49,6 +49,7 @@ public class Activator extends AbstractUIPlugin {
 		//TODO Get these values from the preferences
 		cfg.setSharedVariable("author", "Rob Newton");
 		cfg.setSharedVariable("date", today);
+		cfg.setSharedVariable("prefixedLineWrap", new com.freemarker.lpex.FreeMarker.PrefixedLineWrap());
         
 		super.start(context);
 	}
