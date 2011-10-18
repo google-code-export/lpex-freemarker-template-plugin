@@ -1,41 +1,30 @@
-New session
-=================================
-INFO 10/18/2011 09:26 Launching parameter dialog (0/10)
-INFO 10/18/2011 09:26 Launching parameter dialog (1/10)
-INFO 10/18/2011 09:26 Launching parameter dialog (2/10)
-INFO 10/18/2011 09:26      /**
+INFO 10/18/2011 16:35      /**
       *--------------------------------------------------------------------
-      * @brief procdesc
+      * @brief Description of the procedure
       *
-      * 
+      * Documentation describing the procedures behavior
       *
       * @author Rob Newton
       * @date   10/18/2011
       *
-      * @param  parm0desc
-      * @param  parm1desc
-      * @param  parm2desc
-      * @param  parm3desc
+      * @param  Description of parm 1
+      * @param  Description of parm2
       *
-      * @return proc return
+      * @return Return value description
       *--------------------------------------------------------------------
       */
  
       // BEGIN PROCEDURE
-     p namepsace_procname...
+     p NameSpace_testProcedure...
      p                 b                   export
  
       // Procedure Interface
       /////////////////////////////////
-     d namepsace_procname...
+     d NameSpace_testProcedure...
      d                 pi              n
-     d  pr_parm0...
+     d  pr_parmName1...
      d                 s               n
-     d  pr_parm1...
-     d                 s               n
-     d  pr_parm2...
-     d                 s               n
-     d  pr_parm3...
+     d  pr_parmName2...
      d                 s               n
  
       // Define Local Vars
@@ -50,7 +39,7 @@ INFO 10/18/2011 09:26      /**
        return true;
       /end-free
  
-     p namepsace_procname...
+     p NameSpace_testProcedure...
      p                 e
       // END PROCEDURE
-INFO 10/18/2011 09:26 {procedure={repeats=[{documentation=, name=procname, nameSpace=namepsace, returnDescription=proc return, description=procdesc}], documentation=, nameSpace=namepsace, name=procname, description=procdesc, returnDescription=proc return}, parameter={repeats=[{name=parm0, description=parm0desc}, {name=parm1, description=parm1desc}, {name=parm2, description=parm2desc}, {name=parm3, description=parm3desc}], name=parm0, description=parm0desc}}
+=================================

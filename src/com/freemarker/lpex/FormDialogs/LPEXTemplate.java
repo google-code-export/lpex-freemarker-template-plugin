@@ -10,9 +10,11 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.freemarker.lpex.Activator;
+import com.freemarker.lpex.Utils.PluginLogger;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -41,7 +43,7 @@ public class LPEXTemplate {
 			ArrayList<Map<String, Object>> repeats = new ArrayList<Map<String, Object>>();
 			
 			//Initialize the first in the list
-			repeats.add(promptGroup.getInitializedMap());
+			//repeats.add(promptGroup.getInitializedMap());
 			
 			//Create a set of shortcut fields for the first prompt result
 			pgHash.putAll(promptGroup.getInitializedMap());
@@ -99,6 +101,34 @@ public class LPEXTemplate {
 		template = null;
 		
 		return result;
+	}
+	
+	public static String getFormDataAsString() {
+		String out = "Form Data\r\n";
+
+		//Loop through each prompt group data element
+	    Iterator pgd_it = LPEXTemplate.formData.entrySet().iterator();
+	    while (pgd_it.hasNext()) {
+	        Map.Entry promptGroup = (Map.Entry)pgd_it.next();
+	        String promptGroupName = (String) promptGroup.getKey();
+	        Map<String, Object> promptGroupMap = (Map<String, Object>) promptGroup.getValue();
+	        out += promptGroupName + "\r\n";
+	        
+	        //Loop through each collected set of prompt data
+	        int i = 0;
+	        ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroupMap.get("repeats");
+			for (Map<String, Object> map:repeats) {
+				out += "   Repeat (" + (i+1)  + "/" + repeats.size() + ")\r\n";
+			    Iterator it = map.entrySet().iterator();
+			    while (it.hasNext()) {
+			        Map.Entry pairs = (Map.Entry)it.next();
+					out += "      " + pairs.getKey() + " : " + pairs.getValue() + "\r\n";
+			    }
+			    i++;
+			}
+	    }
+		
+		return out;
 	}
 	
 	public String getResult() throws TemplateException, IOException, Exception {

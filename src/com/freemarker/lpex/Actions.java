@@ -27,6 +27,10 @@ public class Actions {
 				//Present the dialogs for the user to fill out
 				lpexTemplate.getForm().open();
 				
+				//PluginLogger.logger.info("Prompting finished. Moving on to merge now.");
+				//PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
+				//PluginLogger.logger.info(lpexTemplate.formData.toString());
+				
 				//Merge the collected data with the template
 				lpexTemplate.merge();
 				

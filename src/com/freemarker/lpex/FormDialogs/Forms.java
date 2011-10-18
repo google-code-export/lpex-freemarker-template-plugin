@@ -205,14 +205,14 @@ public class Forms implements Serializable {
 			
 			// Draw the prompt using SWT
 			final Shell shell = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-			shell.setSize(500, 300);
-			shell.setLocation(300, 300);
+			shell.setSize(600, 450);
+			shell.setLocation(200, 200);
 			shell.setLayout(new GridLayout(2, false));
 
 			//Add an OK button
 			final Button buttonOK = new Button(shell, SWT.PUSH);
 			buttonOK.setText("OK");
-			//buttonOK.setBounds(20, 0, 80, 25);
+			buttonOK.setSize(80, 25);
 			GridData gridData = new GridData();
 			gridData.verticalAlignment = SWT.TOP;
 			buttonOK.setLayoutData(gridData);
@@ -220,7 +220,23 @@ public class Forms implements Serializable {
 			buttonOK.addListener(SWT.Selection, new Listener() {
 				public void handleEvent(Event event) {
 					if (event.widget == buttonOK) {
-						shell.close();
+						if (promptGroup.isRepeatable()) {
+							if (repeatIndex < promptGroup.getMaxRepeats()) {
+								//If entry is found then present again until no entry
+								String allEnteredText = PromptGroup.getAllValuesByIndex(promptGroup.getName(), repeatIndex);
+								//PluginLogger.logger.info("All entered text for " + promptGroup.getName() + " (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + "): \"" + allEnteredText + "\"");
+								if (allEnteredText == "") {
+									//PluginLogger.logger.info("Data entered is blank, so do not auto repeat.");
+									shell.close();
+								}else{
+									//PluginLogger.logger.info("Auto repeat of the " + promptGroup.getName() + " dialog (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + ")");
+									shell.close();
+									displayDialog(promptGroup, repeatIndex + 1);
+								}
+							}
+						}else{
+							shell.close();
+						}
 					}
 				}
 			});
@@ -235,7 +251,7 @@ public class Forms implements Serializable {
 					public void handleEvent(Event event) {
 						if (event.widget == buttonRepeat) {
 							if (repeatIndex < promptGroup.getMaxRepeats()) {
-								//PluginLogger.logger.info("Launching " + promptGroup.getName() + " dialog (" + repeatIndex + "/" + promptGroup.getMaxRepeats() + ")");
+								//PluginLogger.logger.info("Manual repeat of the " + promptGroup.getName() + " dialog (" + repeatIndex + 1 + "/" + promptGroup.getMaxRepeats() + ")");
 								shell.close();
 								displayDialog(promptGroup, repeatIndex + 1);
 							}

@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.freemarker.lpex.Utils.PluginLogger;
+import com.freemarker.lpex.Utils.StackTraceUtil;
 
 public class Prompt implements Serializable {
 
@@ -58,6 +59,11 @@ public class Prompt implements Serializable {
 		setLabel(label);
 		setDescription(description);
 		setHint(hint);
+	}
+	
+	public static String getPromptValueAt(String promptGroup, String prompt, Integer index) {
+		Map<String, Object> map = PromptGroup.getRepeatingData(promptGroup).get(index);
+		return (String) map.get(prompt);
 	}
 
 	public Integer getCurrentRepeat() {
@@ -238,6 +244,7 @@ public class Prompt implements Serializable {
 		text.setData("promptGroupName", groupPromptName);
 		text.setData("promptName", this.name);
 		text.setData("repeatIndex", this.currentRepeat);
+		text.setData("hint", this.hint);
 
 		//Choose to show the hint or the default value
 		try {
@@ -256,12 +263,18 @@ public class Prompt implements Serializable {
 			public void modifyText(ModifyEvent event) {
 				// Get the widget whose text was modified
 				Text text = (Text) event.widget;
+				String pomptHint = (String) text.getData("hint");
+				//Check for non entry
+				if ((text.getText() == pomptHint) ||
+					(text.getText() == "")) {
+					return;
+				}
 				String promptGroupName = (String) text.getData("promptGroupName");
 				String promptName = (String) text.getData("promptName");
 				Integer repeatIndex = (Integer) text.getData("repeatIndex");
 				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
-				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
-				try {
+                ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+                try {
 					repeats.get(repeatIndex).put(promptName, text.getText());
 				} catch (Exception e) {
 					Map<String, Object> capturedValue = new HashMap<String, Object>();
@@ -295,6 +308,8 @@ public class Prompt implements Serializable {
 		text.setToolTipText(hint);
 		text.setData("promptGroupName", groupPromptName);
 		text.setData("promptName", this.name);
+		text.setData("repeatIndex", this.currentRepeat);
+		text.setData("hint", this.hint);
 		
 		//Choose to show the hint or the default value
 		try {
@@ -315,6 +330,43 @@ public class Prompt implements Serializable {
 		            e.doit = true;
 		        }
 		    }
+		});
+
+		//Add the listener to capture the data entered automatically
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				try {
+					// Get the widget whose text was modified
+					Text text = (Text) event.widget;
+					String pomptHint = (String) text.getData("hint");
+					//Check for non entry
+					if ((text.getText() == pomptHint) ||
+						(text.getText() == "")) {
+						return;
+					}
+					String promptGroupName = (String) text.getData("promptGroupName");
+					String promptName = (String) text.getData("promptName");
+					Integer repeatIndex = (Integer) text.getData("repeatIndex");
+					Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
+					ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+					try {
+						repeats.get(repeatIndex).put(promptName, text.getText());
+					} catch (Exception e) {
+						Map<String, Object> capturedValue = new HashMap<String, Object>();
+						capturedValue.put(promptName, text.getText());
+						repeats.add(repeatIndex, capturedValue);
+					}
+					// If it's the first item create the natural shortcuts to
+					// prevent having to use the repeats array when there is 
+					// only one item
+					if (repeatIndex == 0) {
+						promptGroup.put(promptName, text.getText());
+					}
+				} catch (Exception e) {
+					PluginLogger.logger.info("Failed to handle multi-line text modification.");
+					PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+				}
+			}
 		});
 	}
 	
