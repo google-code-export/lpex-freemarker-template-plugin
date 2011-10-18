@@ -235,7 +235,7 @@ public class Forms implements Serializable {
 					public void handleEvent(Event event) {
 						if (event.widget == buttonRepeat) {
 							if (repeatIndex < promptGroup.getMaxRepeats()) {
-								PluginLogger.logger.info("Launching " + promptGroup.getName() + " dialog (" + repeatIndex + "/" + promptGroup.getMaxRepeats() + ")");
+								//PluginLogger.logger.info("Launching " + promptGroup.getName() + " dialog (" + repeatIndex + "/" + promptGroup.getMaxRepeats() + ")");
 								shell.close();
 								displayDialog(promptGroup, repeatIndex + 1);
 							}

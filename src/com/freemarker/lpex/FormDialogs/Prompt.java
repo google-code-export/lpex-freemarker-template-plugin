@@ -2,6 +2,7 @@ package com.freemarker.lpex.FormDialogs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -179,26 +180,6 @@ public class Prompt implements Serializable {
 		else if (this.type == InputType.MULTILINE) renderMultilineTextInput();
 		else if (this.type == InputType.CHECKBOX) renderCheckboxInput();
 		else if (this.type == InputType.DATE) renderDateInput();
-
-		// Create reusable modify listener for the generated fields
-		modifyTextListener = new org.eclipse.swt.events.ModifyListener() {
-			public void modifyText(ModifyEvent event) {
-				// Get the widget whose text was modified
-				Text text = (Text) event.widget;
-				String promptGroupName = (String) text.getData("promptGroupName");
-				String promptName = (String) text.getData("promptName");
-				Integer repeatIndex = (Integer) text.getData("repeatIndex");
-				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
-				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
-				repeats.get(repeatIndex).put(promptName, text.getText());
-				// If it's the first item create the natural shortcuts to
-				// prevent having to use the repeats array when there is 
-				// only one item
-				if (repeatIndex == 0) {
-					promptGroup.put(promptName, text.getText());
-				}
-			}
-		};
 	}
 	
 	private void renderPromptLabel() {
@@ -256,7 +237,7 @@ public class Prompt implements Serializable {
 		text.setToolTipText(hint);
 		text.setData("promptGroupName", groupPromptName);
 		text.setData("promptName", this.name);
-		text.setData("repeatIndex", 0);
+		text.setData("repeatIndex", this.currentRepeat);
 
 		//Choose to show the hint or the default value
 		try {
@@ -280,7 +261,13 @@ public class Prompt implements Serializable {
 				Integer repeatIndex = (Integer) text.getData("repeatIndex");
 				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
 				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
-				repeats.get(repeatIndex).put(promptName, text.getText());
+				try {
+					repeats.get(repeatIndex).put(promptName, text.getText());
+				} catch (Exception e) {
+					Map<String, Object> capturedValue = new HashMap<String, Object>();
+					capturedValue.put(promptName, text.getText());
+					repeats.add(repeatIndex, capturedValue);
+				}
 				// If it's the first item create the natural shortcuts to
 				// prevent having to use the repeats array when there is 
 				// only one item

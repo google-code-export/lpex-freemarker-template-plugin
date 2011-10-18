@@ -1,34 +1,41 @@
-=================================
 New session
 =================================
-INFO 10/18/2011 09:10 Launching parameter dialog (0/10)
-INFO 10/18/2011 09:10 Launching parameter dialog (1/10)
-INFO 10/18/2011 09:11 Launching parameter dialog (2/10)
-INFO 10/18/2011 09:11 Launching parameter dialog (3/10)
-INFO 10/18/2011 09:11      /**
+INFO 10/18/2011 09:26 Launching parameter dialog (0/10)
+INFO 10/18/2011 09:26 Launching parameter dialog (1/10)
+INFO 10/18/2011 09:26 Launching parameter dialog (2/10)
+INFO 10/18/2011 09:26      /**
       *--------------------------------------------------------------------
-      * @brief proc description
+      * @brief procdesc
       *
       * 
       *
       * @author Rob Newton
       * @date   10/18/2011
       *
-      * @param  parm4desc
+      * @param  parm0desc
+      * @param  parm1desc
+      * @param  parm2desc
+      * @param  parm3desc
       *
-      * @return return variable
+      * @return proc return
       *--------------------------------------------------------------------
       */
  
       // BEGIN PROCEDURE
-     p namespace_procname...
+     p namepsace_procname...
      p                 b                   export
  
       // Procedure Interface
       /////////////////////////////////
-     d namespace_procname...
+     d namepsace_procname...
      d                 pi              n
-     d  pr_parm4...
+     d  pr_parm0...
+     d                 s               n
+     d  pr_parm1...
+     d                 s               n
+     d  pr_parm2...
+     d                 s               n
+     d  pr_parm3...
      d                 s               n
  
       // Define Local Vars
@@ -43,7 +50,7 @@ INFO 10/18/2011 09:11      /**
        return true;
       /end-free
  
-     p namespace_procname...
+     p namepsace_procname...
      p                 e
       // END PROCEDURE
-INFO 10/18/2011 09:11 {procedure={repeats=[{documentation=, name=procname, nameSpace=namespace, returnDescription=return variable, description=proc description}], documentation=, nameSpace=namespace, name=procname, description=proc description, returnDescription=return variable}, parameter={repeats=[{name=parm4, description=parm4desc}], name=parm4, description=parm4desc}}
+INFO 10/18/2011 09:26 {procedure={repeats=[{documentation=, name=procname, nameSpace=namepsace, returnDescription=proc return, description=procdesc}], documentation=, nameSpace=namepsace, name=procname, description=procdesc, returnDescription=proc return}, parameter={repeats=[{name=parm0, description=parm0desc}, {name=parm1, description=parm1desc}, {name=parm2, description=parm2desc}, {name=parm3, description=parm3desc}], name=parm0, description=parm0desc}}

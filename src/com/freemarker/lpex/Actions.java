@@ -33,7 +33,6 @@ public class Actions {
 				//Insert the merged template into the cursor position of the current LPEX document
 				//TODO Replace this log write with the insert to the LPEX editor
 				PluginLogger.logger.info(lpexTemplate.getResult());
-				PluginLogger.logger.info(LPEXTemplate.formData.toString());
 				
 			} catch (TemplateException e) {
 				PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
