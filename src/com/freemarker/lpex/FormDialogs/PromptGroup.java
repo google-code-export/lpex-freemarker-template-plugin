@@ -97,9 +97,10 @@ public class PromptGroup implements Serializable {
 		return initMap;
 	}
 	
-	public void render(Shell shell) {
+	public void render(Shell shell, Integer repeatIndex) {
 		for (Prompt prompt : prompts) 
 		{
+			prompt.setCurrentRepeat(repeatIndex);
 			prompt.render(shell);
 		}
 	}

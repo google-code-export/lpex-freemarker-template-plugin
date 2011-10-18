@@ -234,8 +234,9 @@ public class Forms implements Serializable {
 				buttonRepeat.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event event) {
 						if (event.widget == buttonRepeat) {
-							shell.close();
-							if (promptGroup.getMaxRepeats() < repeatIndex) {
+							if (repeatIndex < promptGroup.getMaxRepeats()) {
+								PluginLogger.logger.info("Launching " + promptGroup.getName() + " dialog (" + repeatIndex + "/" + promptGroup.getMaxRepeats() + ")");
+								shell.close();
 								displayDialog(promptGroup, repeatIndex + 1);
 							}
 						}
@@ -260,7 +261,7 @@ public class Forms implements Serializable {
 			}*/
 
 			//Draw all of the input fields
-			promptGroup.render(shell);
+			promptGroup.render(shell, repeatIndex);
 
 			//Present to the user
 			shell.open();
