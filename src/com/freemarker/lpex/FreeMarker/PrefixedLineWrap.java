@@ -1,4 +1,4 @@
-package com.freemarker.lpex.FreeMarker;
+package com.freemarker.lpex.freemarker;
 
 import java.io.IOException;
 import java.io.Writer;

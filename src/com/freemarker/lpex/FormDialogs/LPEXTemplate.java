@@ -1,4 +1,4 @@
-package com.freemarker.lpex.FormDialogs;
+package com.freemarker.lpex.formdialogs;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.freemarker.lpex.Activator;
-import com.freemarker.lpex.Utils.PluginLogger;
+import com.freemarker.lpex.utils.PluginLogger;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

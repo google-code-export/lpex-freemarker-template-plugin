@@ -1,4 +1,4 @@
-package com.freemarker.lpex.FormDialogs;
+package com.freemarker.lpex.formdialogs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -15,8 +15,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-import com.freemarker.lpex.Utils.PluginLogger;
-import com.freemarker.lpex.Utils.StackTraceUtil;
+import com.freemarker.lpex.utils.PluginLogger;
+import com.freemarker.lpex.utils.StackTraceUtil;
 
 public class TemplateFormDialog extends FormDialog {
 

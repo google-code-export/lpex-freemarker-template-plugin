@@ -1,4 +1,4 @@
-package com.freemarker.lpex.FormDialogs;
+package com.freemarker.lpex.formdialogs;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
 
-import com.freemarker.lpex.Utils.PluginLogger;
-import com.freemarker.lpex.Utils.StackTraceUtil;
+import com.freemarker.lpex.utils.PluginLogger;
+import com.freemarker.lpex.utils.StackTraceUtil;
 
 public class Prompt implements Serializable {
 

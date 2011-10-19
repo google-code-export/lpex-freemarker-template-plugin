@@ -1,4 +1,4 @@
-package com.freemarker.lpex.FormDialogs;
+package com.freemarker.lpex.formdialogs;
 
 import java.io.Serializable;
 import java.util.ArrayList;

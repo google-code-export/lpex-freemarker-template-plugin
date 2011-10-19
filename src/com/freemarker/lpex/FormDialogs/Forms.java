@@ -1,4 +1,4 @@
-package com.freemarker.lpex.FormDialogs;
+package com.freemarker.lpex.formdialogs;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,9 +51,9 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
 import com.freemarker.lpex.Activator;
-import com.freemarker.lpex.FormDialogs.Prompt.InputType;
-import com.freemarker.lpex.Utils.PluginLogger;
-import com.freemarker.lpex.Utils.StackTraceUtil;
+import com.freemarker.lpex.formdialogs.Prompt.InputType;
+import com.freemarker.lpex.utils.PluginLogger;
+import com.freemarker.lpex.utils.StackTraceUtil;
 import com.ibm.xylem.instructions.ChooseInstruction.Case;
 
 import freemarker.template.Template;

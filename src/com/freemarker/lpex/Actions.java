@@ -1,8 +1,8 @@
 package com.freemarker.lpex;
 
-import com.freemarker.lpex.FormDialogs.LPEXTemplate;
-import com.freemarker.lpex.Utils.PluginLogger;
-import com.freemarker.lpex.Utils.StackTraceUtil;
+import com.freemarker.lpex.formdialogs.LPEXTemplate;
+import com.freemarker.lpex.utils.PluginLogger;
+import com.freemarker.lpex.utils.StackTraceUtil;
 import com.ibm.lpex.core.LpexAction;
 import com.ibm.lpex.core.LpexView;
 

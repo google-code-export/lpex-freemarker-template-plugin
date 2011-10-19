@@ -3,7 +3,7 @@ package com.freemarker.lpex;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.freemarker.lpex.Utils.PluginLogger;
+import com.freemarker.lpex.utils.PluginLogger;
 
 //http://stackoverflow.com/questions/5744520/adding-jars-to-a-eclipse-plugin
 import freemarker.template.Configuration;
@@ -49,7 +49,7 @@ public class Activator extends AbstractUIPlugin {
 		//TODO Get these values from the preferences
 		cfg.setSharedVariable("author", "Rob Newton");
 		cfg.setSharedVariable("date", today);
-		cfg.setSharedVariable("prefixedLineWrap", new com.freemarker.lpex.FreeMarker.PrefixedLineWrap());
+		cfg.setSharedVariable("prefixedLineWrap", new com.freemarker.lpex.freemarker.PrefixedLineWrap());
         
 		super.start(context);
 	}

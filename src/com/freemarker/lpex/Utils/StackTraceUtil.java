@@ -1,4 +1,4 @@
-package com.freemarker.lpex.Utils;
+package com.freemarker.lpex.utils;
 
 import java.io.*;
 
