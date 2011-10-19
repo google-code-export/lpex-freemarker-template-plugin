@@ -41,6 +41,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,8 +51,10 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
 import com.freemarker.lpex.Activator;
+import com.freemarker.lpex.FormDialogs.Prompt.InputType;
 import com.freemarker.lpex.Utils.PluginLogger;
 import com.freemarker.lpex.Utils.StackTraceUtil;
+import com.ibm.xylem.instructions.ChooseInstruction.Case;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -105,18 +108,13 @@ public class Forms implements Serializable {
 				{
 					try
 					{
-						Prompt p = new Prompt();
 						Element promptElement = (Element) promptNodes.item(j);
-						p.setType(promptElement.getElementsByTagName("type").item(0).getTextContent());
-						p.setName(promptElement.getElementsByTagName("name").item(0).getTextContent());
-						p.setLabel(promptElement.getElementsByTagName("label").item(0).getTextContent());
-						p.setDescription(promptElement.getElementsByTagName("description").item(0).getTextContent());
-						p.setHint(promptElement.getElementsByTagName("hint").item(0).getTextContent());
-						pg.addPrompt(p);
+						pg.addPrompt(parsePrompt(promptElement));
+						promptElement = null;
 					}
 					catch (Exception e) 
 					{
-						PluginLogger.logger.info("Processing prompt "+j+" exited prematurely");
+						PluginLogger.logger.info("Skipped a invalid prompt: " + e.getMessage());
 						//PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
 					}
 				}
@@ -126,6 +124,73 @@ public class Forms implements Serializable {
 			}
 		}
 		xmlobj = null;
+	}
+	
+	private Prompt parsePrompt(Element promptElement) throws Exception {
+		Prompt prompt = new Prompt();
+		try {
+			prompt.setType(promptElement.getElementsByTagName("type").item(0).getTextContent());
+		} catch (Exception e) {
+			//Cannot hide this error, so prevent the prompt from being used
+			throw new Exception("A valid prompt type is required.", e);
+		}
+		try {
+			prompt.setName(promptElement.getElementsByTagName("name").item(0).getTextContent());
+		} catch (Exception e) {
+			//Cannot hide this error, so prevent the prompt from being used
+			throw new Exception("A valid prompt name is required.", e);
+		}
+		try {
+			prompt.setLabel(promptElement.getElementsByTagName("label").item(0).getTextContent());
+		} catch (Exception e) {
+			//Suppress this error and just use the name instead
+			prompt.setLabel(prompt.getName());
+		}
+		try {
+			prompt.setDescription(promptElement.getElementsByTagName("description").item(0).getTextContent());
+		} catch (Exception e) {
+			//Suppress this error and just use an empty string
+			prompt.setDescription("");
+		}
+		try {
+			prompt.setHint(promptElement.getElementsByTagName("hint").item(0).getTextContent());
+		} catch (Exception e) {
+			//Suppress this error and just use an empty string
+			prompt.setHint("");
+		}
+		
+		//Apply the special attributes for some types
+		parseTypeOptions(promptElement, prompt);
+		
+		return prompt;
+	}
+	
+	private void parseTypeOptions(Element promptElement, Prompt prompt) {
+		Element typeTag = (Element) promptElement.getElementsByTagName("type").item(0);
+		if (prompt.getType() == InputType.CHECKBOX) {
+			//Read additional options
+			try {
+				prompt.setCheckedValue(typeTag.getAttribute("checkedValue"));
+			} catch (Exception e) {
+				prompt.setCheckedValue("");
+			}
+			try {
+				prompt.setUncheckedValue(typeTag.getAttribute("uncheckedValue"));
+			} catch (Exception e) {
+				prompt.setCheckedValue("");
+			}
+		}else if (prompt.getType() == InputType.DATE) {
+			//Read additional options
+			try {
+				prompt.setDateFormat(typeTag.getAttribute("dateFormat"));
+			} catch (Exception e) {
+				prompt.setDateFormat(Prompt.DEFAULT_DATE_FORMAT);
+			}
+		}else if (prompt.getType() == InputType.MULTILINE) {
+			//None
+		}else if (prompt.getType() == InputType.TEXT) {
+			//None
+		}
 	}
 	
 	@SuppressWarnings("unused")

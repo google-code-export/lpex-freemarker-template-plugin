@@ -5,6 +5,19 @@
     <promptgroups>
       <promptgroup name="procedure" repeatable="no" maxRepeats="0">
         <prompt>
+          <type checkedValue="export" uncheckedValue="">checkbox</type>
+          <name>export</name>
+          <label>Export?</label>
+          <description>Check this box if the procedure should be exported from this module.</description>
+          <hint>checked</hint>
+        </prompt>
+        <prompt>
+          <type dateFormat="MM/dd/yyyy">date</type>
+          <name>createdate</name>
+          <label>Creation Date</label>
+          <description>Choose a date to use as the creation date of this procedure.</description>
+        </prompt>
+        <prompt>
           <type>text</type>
           <name>nameSpace</name>
           <label>Namespace</label>
@@ -66,7 +79,7 @@
       * ${procedure.documentation}
       *
       * @author ${author}
-      * @date   ${date}
+      * @date   ${procedure.createdate}
       *
       <#list parameter.repeats as parm>
       * @param  ${parm.description}
@@ -78,7 +91,7 @@
  
       // BEGIN PROCEDURE
      p ${procedure.nameSpace}_${procedure.name}...
-     p                 b                   export
+     p                 b                   ${procedure.export}
  
       // Procedure Interface
       /////////////////////////////////

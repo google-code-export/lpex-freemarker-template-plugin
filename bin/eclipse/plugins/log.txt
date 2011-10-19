@@ -1,31 +1,31 @@
-INFO 10/18/2011 16:35      /**
+New session
+=================================
+INFO 10/19/2011 13:46 Date format: MM/dd/yyyy
+INFO 10/19/2011 13:46 Pieced together date from widget: 10/20/2011
+INFO 10/19/2011 13:46 Parsed date: Thu Oct 20 00:00:00 EDT 2011
+INFO 10/19/2011 13:46 Formatted date: 10/20/2011
+INFO 10/19/2011 13:46      /**
       *--------------------------------------------------------------------
-      * @brief Description of the procedure
+      * @brief 
       *
-      * Documentation describing the procedures behavior
+      * 
       *
       * @author Rob Newton
-      * @date   10/18/2011
+      * @date   10/20/2011
       *
-      * @param  Description of parm 1
-      * @param  Description of parm2
       *
-      * @return Return value description
+      * @return 
       *--------------------------------------------------------------------
       */
  
       // BEGIN PROCEDURE
-     p NameSpace_testProcedure...
+     p _...
      p                 b                   export
  
       // Procedure Interface
       /////////////////////////////////
-     d NameSpace_testProcedure...
+     d _...
      d                 pi              n
-     d  pr_parmName1...
-     d                 s               n
-     d  pr_parmName2...
-     d                 s               n
  
       // Define Local Vars
       /////////////////////////////////
@@ -39,7 +39,48 @@ INFO 10/18/2011 16:35      /**
        return true;
       /end-free
  
-     p NameSpace_testProcedure...
+     p _...
      p                 e
       // END PROCEDURE
-=================================
+INFO 10/19/2011 13:46 Date format: EEE, MMM d, ''yy
+INFO 10/19/2011 13:46 Pieced together date from widget: 10/20/2011
+INFO 10/19/2011 13:46 Parsed date: Thu Oct 20 00:00:00 EDT 2011
+INFO 10/19/2011 13:46 Formatted date: Thu, Oct 20, '11
+INFO 10/19/2011 13:46      /**
+      *--------------------------------------------------------------------
+      * @brief 
+      *
+      * 
+      *
+      * @author Rob Newton
+      * @date   Thu, Oct 20, '11
+      *
+      *
+      * @return 
+      *--------------------------------------------------------------------
+      */
+ 
+      // BEGIN PROCEDURE
+     p _...
+     p                 b                   export
+ 
+      // Procedure Interface
+      /////////////////////////////////
+     d _...
+     d                 pi              n
+ 
+      // Define Local Vars
+      /////////////////////////////////
+      // *None
+ 
+      //Main
+      /free
+      
+       //TODO: Perform some business logic here
+ 
+       return true;
+      /end-free
+ 
+     p _...
+     p                 e
+      // END PROCEDURE

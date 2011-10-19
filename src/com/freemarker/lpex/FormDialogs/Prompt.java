@@ -1,7 +1,9 @@
 package com.freemarker.lpex.FormDialogs;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
@@ -22,10 +25,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolItem;
 
 import com.freemarker.lpex.Utils.PluginLogger;
 import com.freemarker.lpex.Utils.StackTraceUtil;
@@ -38,6 +44,7 @@ public class Prompt implements Serializable {
 		TEXT, DATE, MULTILINE, CHECKBOX
 	}
 
+	public final static String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 	private String groupPromptName = "";
 	private Integer currentRepeat = 0;
 	private Object shell = null;
@@ -47,6 +54,9 @@ public class Prompt implements Serializable {
 	private String label = "";
 	private String description = "";
 	private String hint = "";
+	private String checkedValue = "";
+	private String uncheckedValue = "";
+	private String dateFormat = DEFAULT_DATE_FORMAT;
 	private Object defaultValue = "";
 	private org.eclipse.swt.events.ModifyListener modifyTextListener;
 
@@ -61,6 +71,30 @@ public class Prompt implements Serializable {
 		setHint(hint);
 	}
 	
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public String getCheckedValue() {
+		return checkedValue;
+	}
+
+	public void setCheckedValue(String checkedValue) {
+		this.checkedValue = checkedValue;
+	}
+
+	public String getUncheckedValue() {
+		return uncheckedValue;
+	}
+
+	public void setUncheckedValue(String uncheckedValue) {
+		this.uncheckedValue = uncheckedValue;
+	}
+
 	public static String getPromptValueAt(String promptGroup, String prompt, Integer index) {
 		Map<String, Object> map = PromptGroup.getRepeatingData(promptGroup).get(index);
 		return (String) map.get(prompt);
@@ -386,11 +420,47 @@ public class Prompt implements Serializable {
 		checkbox.setText(name);
 		checkbox.setData("promptGroupName", groupPromptName);
 		checkbox.setData("promptName", this.name);
+		checkbox.setData("repeatIndex", this.currentRepeat);
+		checkbox.setData("hint", this.hint);
+		checkbox.setData("checkedValue", this.checkedValue);
+		checkbox.setData("uncheckedValue", this.uncheckedValue);
 		try {
 			Boolean checked = (Boolean) defaultValue;
 			checkbox.setSelection(checked);
 		} catch (Exception e) {}
 	    checkbox.setToolTipText(hint);
+
+		//Add the listener to capture the data entered automatically
+		//checkbox.addListener(SWT.Selection, new Listener() {
+	    checkbox.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent event) {
+				Button checkbox = (Button) event.widget;
+				String checkboxValue = checkbox.getSelection() ? 
+						(String) checkbox.getData("checkedValue") : 
+						(String) checkbox.getData("uncheckedValue");
+				String promptGroupName = (String) checkbox.getData("promptGroupName");
+				String promptName = (String) checkbox.getData("promptName");
+				Integer repeatIndex = (Integer) checkbox.getData("repeatIndex");
+				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
+				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+				try {
+					repeats.get(repeatIndex).put(promptName, checkboxValue);
+				} catch (Exception e) {
+					Map<String, Object> capturedValue = new HashMap<String, Object>();
+					capturedValue.put(promptName, checkboxValue);
+					repeats.add(repeatIndex, capturedValue);
+				}
+				// If it's the first item create the natural shortcuts to
+				// prevent having to use the repeats array when there is
+				// only one item
+				if (repeatIndex == 0) {
+					promptGroup.put(promptName, checkboxValue);
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
 	}
 	
 	private void renderDateInput() {
@@ -409,9 +479,52 @@ public class Prompt implements Serializable {
 		date.setToolTipText(hint);
 		date.setData("promptGroupName", groupPromptName);
 		date.setData("promptName", this.name);
+		date.setData("repeatIndex", this.currentRepeat);
+		//Data format string rules here:
+		//  http://download.oracle.com/javase/tutorial/i18n/format/simpleDateFormat.html
+		date.setData("dateFormat", this.dateFormat);
+		date.setData("hint", this.hint);
 		date.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("time changed");
+			public void widgetSelected(SelectionEvent event) {
+				DateTime date = (DateTime) event.widget;
+				String promptGroupName = (String) date.getData("promptGroupName");
+				String promptName = (String) date.getData("promptName");
+				Integer repeatIndex = (Integer) date.getData("repeatIndex");
+				String dateFormat = (String) date.getData("dateFormat");
+				//PluginLogger.logger.info("Date format: " + dateFormat);
+				//Build date object from results
+			    Date selectedDate = null;
+			    String selectedDateFormatted = "";
+				try {
+					//Build the date from the parts of the widget using the default date format
+					SimpleDateFormat formatter = new SimpleDateFormat(Prompt.DEFAULT_DATE_FORMAT);
+					String dateToParse = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getYear();
+					//PluginLogger.logger.info("Pieced together date from widget: " + dateToParse);
+					selectedDate = formatter.parse(dateToParse);
+					//PluginLogger.logger.info("Parsed date: " + selectedDate.toString());
+					//Assign the date format from the template author
+					formatter = new SimpleDateFormat(dateFormat);
+					selectedDateFormatted = formatter.format(selectedDate);
+					//PluginLogger.logger.info("Formatted date: " + selectedDateFormatted);
+				} catch (Exception e) {
+					//PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+				}
+				
+				Map<String, Object> promptGroup = (Map<String, Object>) LPEXTemplate.formData.get(promptGroupName);
+				ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroup.get("repeats");
+				try {
+					repeats.get(repeatIndex).put(promptName, selectedDateFormatted);
+				} catch (Exception e) {
+					Map<String, Object> capturedValue = new HashMap<String, Object>();
+					capturedValue.put(promptName, selectedDateFormatted);
+					repeats.add(repeatIndex, capturedValue);
+				}
+				// If it's the first item create the natural shortcuts to
+				// prevent having to use the repeats array when there is
+				// only one item
+				if (repeatIndex == 0) {
+					promptGroup.put(promptName, selectedDateFormatted);
+				}
 			}
 		});
 	}
