@@ -11,8 +11,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class PluginLogger {
-	public final static Logger logger = Logger.getLogger(PluginLogger.class
-			.getName());
+	public final static Logger logger = Logger.getLogger(PluginLogger.class.getName());
 	static private FileHandler fileTxt;
 	static private Formatter formatterTxt;
 
@@ -21,8 +20,12 @@ public class PluginLogger {
 		// Logger logger = Logger.getLogger("");
 		logger.setLevel(Level.INFO);
 		fileTxt = new FileHandler(
-				"C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/bin/eclipse/plugins/log.txt",
+				//"C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/bin/eclipse/plugins/log.txt",
+				"log.txt",  
 				true);
+		
+		//Relative paths start at C:\Program Files\IBM\SDP (location of the eclipse.exe)
+		//Plugin directory is C:\Program Files\IBM\SDP\dropins\com.freemarker.lpex\eclipse\plugins
 
 		// Create text Formatter
 		formatterTxt = new TextFormatter();
