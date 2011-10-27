@@ -18,14 +18,26 @@ import freemarker.template.DefaultObjectWrapper;
 public class Preload implements LpexPreload {
 
 	public void preload() {
-		LpexView.doGlobalCommand("set default.updateProfile.userProfile com.freemarker.lpex.CustomUserProfile");
 		initPreferences();
+		PluginLogger.logger.info("Preferences initialized");
+		LpexView.doGlobalCommand("set default.updateProfile.userProfile com.freemarker.lpex.CustomUserProfile");
+		PluginLogger.logger.info("Set default profile to com.freemarker.lpex.CustomUserProfile");
 	}
 
 	private void initPreferences() {
 		Activator.preferenceStore = Activator.getDefault().getPreferenceStore();
 		
 		//Setup the debug logger
+		/*if (Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH) != "") {
+			try {
+				PluginLogger.setup(Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH), Activator.preferenceStore.getString(PreferenceConstants.P_LOG_LEVEL));
+			} catch (IOException e) {}
+		}else{
+			try {
+				PluginLogger.setup("c:/com.freemarker.lpex.log", "all");
+			} catch (IOException e) {}
+		}*/
+		
 		try {
 			PluginLogger.setup(Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH), Activator.preferenceStore.getString(PreferenceConstants.P_LOG_LEVEL));
 		} catch (IOException e) {}

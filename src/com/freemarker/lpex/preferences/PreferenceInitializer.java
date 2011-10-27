@@ -18,8 +18,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_TEMPLATES_DIR, "");
-		store.setDefault(PreferenceConstants.P_LOG_PATH, "");
+		store.setDefault(PreferenceConstants.P_TEMPLATES_DIR, "c:/");
+		store.setDefault(PreferenceConstants.P_LOG_PATH, "c:/com.freemarker.lpex.log");
+		store.setDefault(PreferenceConstants.P_LOG_LEVEL, "severe");
 		store.setDefault(PreferenceConstants.P_AUTHOR, "");
 		store.setDefault(PreferenceConstants.P_USE_CURRENT_DATE, true);
 		store.setDefault(PreferenceConstants.P_DATE_FORMAT, "MM/dd/yyyy");
