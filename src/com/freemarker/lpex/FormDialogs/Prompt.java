@@ -230,6 +230,7 @@ public class Prompt implements Serializable {
 		}
 		
 		label.setText(this.label + ":");
+		label.setToolTipText(this.description);
 		//label.setFont(new Font(Display.getDefault(), "Tahoma", 10, SWT.BOLD));
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = SWT.TOP;

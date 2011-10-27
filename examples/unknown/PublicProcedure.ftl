@@ -7,7 +7,7 @@
         <prompt>
           <type checkedValue="export" uncheckedValue="">checkbox</type>
           <name>export</name>
-          <label>Export?</label>
+          <label>Export this procedure</label>
           <description>Check this box if the procedure should be exported from this module.</description>
           <hint>checked</hint>
         </prompt>
