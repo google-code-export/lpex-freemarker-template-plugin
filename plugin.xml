@@ -8,16 +8,15 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="com.freemarker.lpex.preferences.PreferencePage"
-            id="com.freemarker.lpex.preferences.PreferencePage"
-            name="LPEX FreeMarker Templates">
+         class="com.freemarker.lpex.preferences.PreferencePage"
+         id="com.freemarker.lpex.preferences.PreferencesPage"
+         name="LPEX FreeMarker Templates">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="com.freemarker.lpex.preferences.PreferenceInitializer">
+         class="com.freemarker.lpex.preferences.PreferenceInitializer">
       </initializer>
    </extension>
-
 </plugin>

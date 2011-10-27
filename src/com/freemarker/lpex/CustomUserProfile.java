@@ -6,8 +6,8 @@ public class CustomUserProfile {
 
 	public static void userProfile(LpexView view) {
 		view.defineAction("insertTemplate", new Actions.insertTemplate());
-		view.doDefaultCommand("set keyAction.c-s-f11 insertTemplate");
-		view.doDefaultCommand("set messageText LPEX FreeMarker Actions available with CTRL+Shift+F11");
+		view.doDefaultCommand("set keyAction.c-enter insertTemplate");
+        view.doDefaultCommand("set messageText LPEX FreeMarker Actions available with CTRL+Enter");
 	}
 
 }

@@ -16,12 +16,9 @@ public class PluginLogger {
 	static private Formatter formatterTxt;
 
 	static public void setup() throws IOException {
-		// Create Logger
-		// Logger logger = Logger.getLogger("");
 		logger.setLevel(Level.INFO);
 		fileTxt = new FileHandler(
-				//"C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/bin/eclipse/plugins/log.txt",
-				"log.txt",  
+				"C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/bin/eclipse/plugins/com.freemarker.lpex.log",  
 				true);
 		
 		//Relative paths start at C:\Program Files\IBM\SDP (location of the eclipse.exe)
@@ -56,7 +53,9 @@ class TextFormatter extends Formatter {
 	// This method is called just after the handler using this
 	// formatter is created
 	public String getHead(Handler h) {
-		return "New session\n=================================\n";
+		SimpleDateFormat date_format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		Date resultdate = new Date();
+		return "New session " + date_format.format(resultdate) + "\n=================================\n";
 	}
 
 	// This method is called just after the handler using this

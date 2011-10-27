@@ -16,7 +16,43 @@ public class Actions {
 		
 		public void doAction(LpexView view) {
 			try {
-				LPEXTemplate lpexTemplate = new LPEXTemplate(new File("C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/test.ftl"));
+				//TODO Make this path configurable
+				String baseTemplateFolder = "C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/examples";
+				
+				LPEXManipulator lpexManipulator = new LPEXManipulator(view);
+				final String templateHint = lpexManipulator.getCursorWord();
+				String parser = lpexManipulator.getParser();
+				
+				File templateDirectory = new File(baseTemplateFolder + "/" + parser);
+				FilenameFilter templateFilter = new FilenameFilter() { 
+					public boolean accept(File dir, String name) {
+						File file = new File(dir + "/" + name);
+						if (file.isFile()) {
+					        String extension = file.toString().substring(file.toString().lastIndexOf("."));
+							if (extension.compareToIgnoreCase(".ftl") == 0) {
+								return name.toUpperCase().startsWith(templateHint.toUpperCase());
+							}
+						}
+						return false;
+					}
+				};
+				
+				//PluginLogger.logger.info("Present popup list of templates");
+				
+				String[] templateFiles = templateDirectory.list(templateFilter);
+				String selectedTemplate = "";
+				lpexManipulator.promptTemplateChooser(templateFiles);
+				selectedTemplate = lpexManipulator.getSelectedTemplateNameNoExt();
+				if (selectedTemplate == "") { 
+					// no matches found
+					return;
+				} 
+				
+				//PluginLogger.logger.info("Selected: " + selectedTemplate);
+				
+				File templateFile = new File(baseTemplateFolder + "/" + parser + "/" + selectedTemplate + ".ftl");
+				
+				LPEXTemplate lpexTemplate = new LPEXTemplate(templateFile);
 				
 				//Parse the form configuration that will dictate the form dialog structure
 				lpexTemplate.buildForm();
@@ -27,7 +63,6 @@ public class Actions {
 				//Present the dialogs for the user to fill out
 				lpexTemplate.getForm().open();
 				
-				//PluginLogger.logger.info("Prompting finished. Moving on to merge now.");
 				//PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
 				//PluginLogger.logger.info(lpexTemplate.formData.toString());
 				
@@ -35,8 +70,7 @@ public class Actions {
 				lpexTemplate.merge();
 				
 				//Insert the merged template into the cursor position of the current LPEX document
-				//TODO Replace this log write with the insert to the LPEX editor
-				PluginLogger.logger.info(lpexTemplate.getResult());
+				lpexManipulator.addBlockTextAtCursorPosition(lpexTemplate.getResult());
 				
 			} catch (TemplateException e) {
 				PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
@@ -49,8 +83,10 @@ public class Actions {
 			return;
 		}
 
-		public boolean available(LpexView view) {
+		public boolean available(LpexView view)
+		{
 			return true;
+			//return (view.query("block.type").equalsIgnoreCase("element") && LPEXManipulator.isInBlock(view)) ;
 		}
 	}
 }

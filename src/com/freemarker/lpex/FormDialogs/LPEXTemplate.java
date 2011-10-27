@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.freemarker.lpex.Activator;
-import com.freemarker.lpex.utils.PluginLogger;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
