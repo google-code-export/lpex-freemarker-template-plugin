@@ -209,7 +209,7 @@ public class Prompt implements Serializable {
 	private void _render(Object shell) {
 		setShell(shell);
 		renderPromptLabel();
-		renderPromptDescription();
+		//renderPromptDescription();
 		
 		//Choose which style input control to render based on the type
 		if (this.type == InputType.TEXT) renderTextInput();
@@ -220,21 +220,21 @@ public class Prompt implements Serializable {
 	
 	private void renderPromptLabel() {
 		Label label = null;
-		Label filler = null;
+		//Label filler = null;
 		if (isGrouped) {
 			label = new Label((Group) shell, SWT.NONE);
-			filler = new Label((Group) shell, SWT.NONE);
+			//filler = new Label((Group) shell, SWT.NONE);
 		}else{
 			label = new Label((Shell) shell, SWT.NONE);
-			filler = new Label((Shell) shell, SWT.NONE);
+			//filler = new Label((Shell) shell, SWT.NONE);
 		}
 		
-		label.setText(this.label);
-		label.setFont(new Font(Display.getDefault(), "Tahoma", 10, SWT.BOLD));
+		label.setText(this.label + ":");
+		//label.setFont(new Font(Display.getDefault(), "Tahoma", 10, SWT.BOLD));
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = SWT.TOP;
 		label.setLayoutData(gridData);
-		filler.setLayoutData(gridData);
+		//filler.setLayoutData(gridData);
 	}
 	
 	private void renderPromptDescription() {
