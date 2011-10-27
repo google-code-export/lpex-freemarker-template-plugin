@@ -14,20 +14,41 @@ public class PluginLogger {
 	public final static Logger logger = Logger.getLogger(PluginLogger.class.getName());
 	static private FileHandler fileTxt;
 	static private Formatter formatterTxt;
-
-	static public void setup() throws IOException {
-		logger.setLevel(Level.INFO);
-		fileTxt = new FileHandler(
-				"C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/bin/eclipse/plugins/com.freemarker.lpex.log",  
-				true);
+	
+	static public void setLevel(String level) {
+		//Parse and set the level
+		if (level.compareToIgnoreCase("all") == 0) {
+			logger.setLevel(Level.ALL);
+		}else if (level.compareToIgnoreCase("info") == 0) {
+			logger.setLevel(Level.INFO);
+		}else if (level.compareToIgnoreCase("warning") == 0) {
+			logger.setLevel(Level.WARNING);
+		}else if (level.compareToIgnoreCase("severe") == 0) {
+			logger.setLevel(Level.SEVERE);
+		}else if (level.compareToIgnoreCase("off") == 0) {
+			logger.setLevel(Level.OFF);
+		}else{
+			logger.setLevel(Level.OFF);
+		}
+	}
+	
+	static public void setPath(String path) throws IOException {
+		try {
+			logger.removeHandler(fileTxt);
+		} catch (Exception e) {}
 		
-		//Relative paths start at C:\Program Files\IBM\SDP (location of the eclipse.exe)
-		//Plugin directory is C:\Program Files\IBM\SDP\dropins\com.freemarker.lpex\eclipse\plugins
+		fileTxt = new FileHandler(path, true);
 
 		// Create text Formatter
 		formatterTxt = new TextFormatter();
 		fileTxt.setFormatter(formatterTxt);
+		
 		logger.addHandler(fileTxt);
+	}
+
+	static public void setup(String path, String level) throws IOException {
+		setLevel(level);
+		setPath(path);
 	}
 }
 

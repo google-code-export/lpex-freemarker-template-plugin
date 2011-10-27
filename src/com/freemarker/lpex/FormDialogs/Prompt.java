@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.freemarker.lpex.Activator;
+import com.freemarker.lpex.preferences.PreferenceConstants;
 import com.freemarker.lpex.utils.PluginLogger;
 import com.freemarker.lpex.utils.StackTraceUtil;
 
@@ -38,7 +40,7 @@ public class Prompt implements Serializable {
 		TEXT, DATE, MULTILINE, CHECKBOX
 	}
 
-	public final static String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
+	public final static String DEFAULT_DATE_FORMAT = Activator.preferenceStore.getString(PreferenceConstants.P_DATE_FORMAT);
 	private String groupPromptName = "";
 	private Integer currentRepeat = 0;
 	private Object shell = null;

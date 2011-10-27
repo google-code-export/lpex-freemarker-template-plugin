@@ -87,7 +87,7 @@ public class LPEXTemplate {
 		}
 		
 		//Create the FreeMarker template
-		Template template = new Template(form.getName(), new StringReader(templateText), Activator.cfg);
+		Template template = new Template(form.getName(), new StringReader(templateText), Activator.freemarkerConfig);
 
 		//Merge data model and template into a string 
 		Writer out = new OutputStreamWriter(output);

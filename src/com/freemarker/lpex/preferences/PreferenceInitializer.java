@@ -18,10 +18,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_BOOLEAN, true);
-		store.setDefault(PreferenceConstants.P_CHOICE, "choice2");
-		store.setDefault(PreferenceConstants.P_STRING,
-				"Default value");
+		store.setDefault(PreferenceConstants.P_TEMPLATES_DIR, "");
+		store.setDefault(PreferenceConstants.P_LOG_PATH, "");
+		store.setDefault(PreferenceConstants.P_AUTHOR, "");
+		store.setDefault(PreferenceConstants.P_USE_CURRENT_DATE, true);
+		store.setDefault(PreferenceConstants.P_DATE_FORMAT, "MM/dd/yyyy");
 	}
 
 }

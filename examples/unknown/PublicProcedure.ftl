@@ -12,12 +12,6 @@
           <hint>checked</hint>
         </prompt>
         <prompt>
-          <type dateFormat="MM/dd/yyyy">date</type>
-          <name>createdate</name>
-          <label>Creation Date</label>
-          <description>Choose a date to use as the creation date of this procedure.</description>
-        </prompt>
-        <prompt>
           <type>text</type>
           <name>nameSpace</name>
           <label>Namespace</label>
@@ -79,7 +73,7 @@
       * ${procedure.documentation}
       *
       * @author ${author}
-      * @date   ${procedure.createdate}
+      * @date   ${date}
       *
       <#list parameter.repeats as parm>
       * @param  ${parm.description}

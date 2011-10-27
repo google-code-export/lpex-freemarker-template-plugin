@@ -21,8 +21,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 
 	public PreferencePage() {
 		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A demonstration of a preference page implementation");
 	}
 
 	/**
@@ -31,17 +29,38 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 	 * editor knows how to save and restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH,
-				"&Directory preference:", getFieldEditorParent()));
-		addField(new BooleanFieldEditor(PreferenceConstants.P_BOOLEAN,
+		addField(new DirectoryFieldEditor(
+				PreferenceConstants.P_TEMPLATES_DIR,
+				"Templates directory:",
+				getFieldEditorParent()));
+		addField(new FileFieldEditor(
+				PreferenceConstants.P_LOG_PATH,
+				"Debug log (relative to Eclipse root):", 
+				getFieldEditorParent()));
+		addField(new RadioGroupFieldEditor(PreferenceConstants.P_LOG_LEVEL,
+				"Choose the logging level", 1,
+				new String[][] {
+					{ "All", "all" },
+					{ "Info", "info" },
+					{ "Warning", "warning" },
+					{ "Severe", "severe" },
+					{ "Off", "off" }
+				}, getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.P_AUTHOR,
+				"Default author:", getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.P_DATE_FORMAT,
+				"Date format (java.text.SimpleDateFormat):", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.P_USE_CURRENT_DATE,
+				"Use current date for all dates:", getFieldEditorParent()));
+		/*addField(new BooleanFieldEditor(PreferenceConstants.P_BOOLEAN,
 				"&An example of a boolean preference", getFieldEditorParent()));
 
 		addField(new RadioGroupFieldEditor(PreferenceConstants.P_CHOICE,
 				"An example of a multiple-choice preference", 1,
-				new String[][] { { "&Choice 1", "choice1" },
-						{ "C&hoice 2", "choice2" } }, getFieldEditorParent()));
+				new String[][] { { "Choice 1", "choice1" },
+						{ "Choice 2", "choice2" } }, getFieldEditorParent()));
 		addField(new StringFieldEditor(PreferenceConstants.P_STRING,
-				"A &text preference:", getFieldEditorParent()));
+				"A &text preference:", getFieldEditorParent()));*/
 	}
 
 	/*
@@ -51,6 +70,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setDescription("Specify settings for LPEX FreeMarker templates.");
 	}
 
 }

@@ -5,12 +5,16 @@ package com.freemarker.lpex.preferences;
  */
 public class PreferenceConstants {
 
-	public static final String P_PATH = "pathPreference";
+	public static final String P_TEMPLATES_DIR = "templatesDirectoryPreference";
 
-	public static final String P_BOOLEAN = "booleanPreference";
+	public static final String P_LOG_PATH = "logPathPreference";
 
-	public static final String P_CHOICE = "choicePreference";
+	public static final String P_LOG_LEVEL = "logLevelPreference";
 
-	public static final String P_STRING = "stringPreference";
+	public static final String P_AUTHOR = "authorPreference";
+
+	public static final String P_USE_CURRENT_DATE = "useCurrentDatePreference";
+
+	public static final String P_DATE_FORMAT = "dateFormatPreference";
 	
 }

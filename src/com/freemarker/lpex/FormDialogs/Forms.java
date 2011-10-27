@@ -400,7 +400,7 @@ public class Forms implements Serializable {
 			+ "</#list>";
 
 		try {
-			template = new Template(this.name+".toString()", new StringReader(templateText), Activator.cfg);
+			template = new Template(this.name+".toString()", new StringReader(templateText), Activator.freemarkerConfig);
 			Writer out = new OutputStreamWriter(output);
 			template.process(this, out);
 			out.flush();

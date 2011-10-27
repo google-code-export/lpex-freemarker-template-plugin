@@ -1,6 +1,7 @@
 package com.freemarker.lpex;
 
 import com.freemarker.lpex.formdialogs.LPEXTemplate;
+import com.freemarker.lpex.preferences.PreferenceConstants;
 import com.freemarker.lpex.utils.PluginLogger;
 import com.freemarker.lpex.utils.StackTraceUtil;
 import com.ibm.lpex.core.LpexAction;
@@ -16,8 +17,12 @@ public class Actions {
 		
 		public void doAction(LpexView view) {
 			try {
-				//TODO Make this path configurable
-				String baseTemplateFolder = "C:/Documents and Settings/RNewton/IBM/rationalsdp/workspace/com.freemarker.lpex/examples";
+				String baseTemplateFolder = Activator.preferenceStore.getString(PreferenceConstants.P_TEMPLATES_DIR);
+				if (baseTemplateFolder == "") {
+					PluginLogger.logger.warning("No template directory set");
+			        view.doDefaultCommand("set messageText You must first set the templates directory in the settings");
+			        return;
+				}
 				
 				LPEXManipulator lpexManipulator = new LPEXManipulator(view);
 				final String templateHint = lpexManipulator.getCursorWord();
@@ -37,9 +42,16 @@ public class Actions {
 					}
 				};
 				
-				//PluginLogger.logger.info("Present popup list of templates");
+				PluginLogger.logger.info("Present popup list of templates");
 				
 				String[] templateFiles = templateDirectory.list(templateFilter);
+				
+				if (templateFiles == null) {
+					PluginLogger.logger.warning("No templates found");
+					view.doDefaultCommand("set messageText No templates found");
+			        return;
+				}
+				
 				String selectedTemplate = "";
 				lpexManipulator.promptTemplateChooser(templateFiles);
 				selectedTemplate = lpexManipulator.getSelectedTemplateNameNoExt();
@@ -48,7 +60,7 @@ public class Actions {
 					return;
 				} 
 				
-				//PluginLogger.logger.info("Selected: " + selectedTemplate);
+				PluginLogger.logger.info("Selected: " + selectedTemplate);
 				
 				File templateFile = new File(baseTemplateFolder + "/" + parser + "/" + selectedTemplate + ".ftl");
 				
@@ -63,8 +75,8 @@ public class Actions {
 				//Present the dialogs for the user to fill out
 				lpexTemplate.getForm().open();
 				
-				//PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
-				//PluginLogger.logger.info(lpexTemplate.formData.toString());
+				PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
+				PluginLogger.logger.info(lpexTemplate.formData.toString());
 				
 				//Merge the collected data with the template
 				lpexTemplate.merge();
@@ -73,11 +85,11 @@ public class Actions {
 				lpexManipulator.addBlockTextAtCursorPosition(lpexTemplate.getResult());
 				
 			} catch (TemplateException e) {
-				PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
 			} catch (IOException e) {
-				PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
 			} catch (Exception e) {
-				PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
+				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
 			}
 
 			return;
@@ -86,7 +98,6 @@ public class Actions {
 		public boolean available(LpexView view)
 		{
 			return true;
-			//return (view.query("block.type").equalsIgnoreCase("element") && LPEXManipulator.isInBlock(view)) ;
 		}
 	}
 }
