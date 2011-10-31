@@ -1,0 +1,17 @@
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Debug\TemplateBuilder.exe
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Debug\TemplateBuilder.pdb
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\TemplateBuilder.exe
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\TemplateBuilder.pdb
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Debug\TemplateBuilder.exe.config
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\TemplateBuilder.Properties.Resources.resources
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\TemplateBuilder.Form1.resources
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Debug\ICSharpCode.TextEditor.dll
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.read.1778.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.read.1795.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.read.1826.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.write.1831.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.read.1850.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.write.1850.tlog

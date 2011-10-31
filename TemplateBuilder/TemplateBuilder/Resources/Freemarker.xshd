@@ -1,0 +1,75 @@
+﻿<?xml version="1.0"?>
+<!-- 
+Copyright 2005-2009 Paul Kohler (http://pksoftware.net/MiniSqlQuery/). All rights reserved.
+This source code is made available under the terms of the Microsoft Public License (Ms-PL)
+http://minisqlquery.codeplex.com/license
+-->
+<SyntaxDefinition name = "FTL" extensions = ".ftl">
+	<Properties>
+		<Property name="LineComment" value="--"/>
+	</Properties>
+	<Digits name = "Digits" bold = "true" italic = "false" color = "Blue"/>
+	<RuleSets>
+		<RuleSet ignorecase = "true">
+			<Delimiters>&lt;&gt;</Delimiters>
+			<Span name="String" bold="false" italic="false" color="Red" stopateol="false">
+				<Begin>"</Begin>
+				<End>"</End>
+			</Span>
+			<Span name = "LineComment" bold = "false" italic = "false" color = "Green" stopateol = "true">
+				<Begin>--</Begin>
+			</Span>
+			<Span name = "BlockComment" bold = "false" italic = "false" color = "Green" stopateol = "false">
+				<Begin>&lt;#--</Begin>
+				<End>--&gt;</End>
+			</Span>
+      <Span name="Directive" bold="true" color="Blue">
+        <Begin>&lt;</Begin>
+        <End>&gt;</End>
+      </Span>
+      <Span name="Variable" bold="true" italic="false" color="DarkRed">
+        <Begin>${</Begin>
+        <End>}</End>
+      </Span>
+    </RuleSet>
+    <RuleSet ignorecase = "true">
+      <KeyWords name="DirectiveKeywords" bold="true" italic="false" color="Red">
+        <Key word="#function" />
+        <Key word="#include" />
+        <Key word="#import" />
+        <Key word="#assign" />
+        <Key word="#return" />
+        <Key word="#default" />
+        <Key word="#break" />
+        <Key word="#noparse" />
+        <Key word="#compress" />
+        <Key word="#escape" />
+        <Key word="#noescape" />
+        <Key word="#global" />
+        <Key word="#local" />
+        <Key word="#setting" />
+        <Key word="#macro" />
+        <Key word="#nested" />
+        <Key word="#flush" />
+        <Key word="#stop" />
+        <Key word="#ftl" />
+        <Key word="#t" />
+        <Key word="#lt" />
+        <Key word="#rt" />
+        <Key word="#nt" />
+        <Key word="#visit" />
+        <Key word="#recurse" />
+        <Key word="#fallback" />
+        <Key word="#if" />
+        <Key word="#else" />
+        <Key word="#elseif" />
+        <Key word="list" />
+        <Key word="#switch" />
+        <Key word="#case" />
+        <Key word="#attempt" />
+        <Key word="#recover" />
+      </KeyWords>
+    </RuleSet>
+    
+	</RuleSets>
+</SyntaxDefinition>

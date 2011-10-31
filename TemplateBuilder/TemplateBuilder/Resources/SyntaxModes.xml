@@ -1,0 +1,5 @@
+<SyntaxModes version="1.0">
+	<Mode file       = "Freemarker.xshd"
+	      name       = "FTL"
+	      extensions = ".ftl"/>
+</SyntaxModes>

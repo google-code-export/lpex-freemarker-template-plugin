@@ -1,0 +1,11 @@
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.Properties.Resources.resources
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\GenerateResource.read.1.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\GenerateResource.write.1.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Release\TemplateBuilder.exe.config
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Release\TemplateBuilder.exe
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Release\TemplateBuilder.pdb
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.exe
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.pdb
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.Form1.resources
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Release\ICSharpCode.TextEditor.dll
