@@ -12,10 +12,25 @@ using System.Xml;
 
 namespace TemplateBuilder
 {
+    public delegate void PromptRenameHandler(Prompt prompt, string newName);
+    public delegate void BeforePromptDeleteHandler(Prompt prompt);
+
     public class Template : List<PromptGroup>
     {
         public string Name { get; set; }
         public string Description { get; set; }
+
+        public PromptRenameHandler promptRenameHandler { get; set; }
+        public BeforePromptDeleteHandler beforePromptDeleteHandler { get; set; }
+
+        public Template()
+        {
+            _RawText = "";
+            Name = "NewTemplate";
+            Description = "";
+            promptRenameHandler = null;
+            beforePromptDeleteHandler = null;
+        }
 
         private string _RawText;
         public string RawText
@@ -71,13 +86,16 @@ namespace TemplateBuilder
         {
             try
             {
-                String startingTag = "<#--";
-                String endingTag = "-->";
-                int startingPosition = 0;
-                int endingPosition = 0;
-                startingPosition = RawText.IndexOf(startingTag) + startingTag.Length;
-                endingPosition = RawText.IndexOf(endingTag);
-                FormConfigXML = RawText.Substring(startingPosition, endingPosition - startingPosition);
+                if (RawText != string.Empty)
+                {
+                    String startingTag = "<#--";
+                    String endingTag = "-->";
+                    int startingPosition = 0;
+                    int endingPosition = 0;
+                    startingPosition = RawText.IndexOf(startingTag) + startingTag.Length;
+                    endingPosition = RawText.IndexOf(endingTag);
+                    FormConfigXML = RawText.Substring(startingPosition, endingPosition - startingPosition);
+                }
             }
             catch (Exception e)
             {
@@ -89,7 +107,10 @@ namespace TemplateBuilder
         {
             try
             {
-                TemplateText = RawText.Substring(RawText.IndexOf("-->")+3);
+                if (RawText != string.Empty)
+                {
+                    TemplateText = RawText.Substring(RawText.IndexOf("-->") + 3);
+                }
             }
             catch (Exception e)
             {
@@ -114,7 +135,7 @@ namespace TemplateBuilder
                 {
                     foreach (XmlNode templateNodeChild in templateNode.ChildNodes)
                     {
-                        if (templateNodeChild is XmlElement) // && (templateNodeChild.HasChildNodes))
+                        if (templateNodeChild is XmlElement)
                         {
                             if (templateNodeChild.Name == "name")
                                 Name = templateNodeChild.InnerText;
@@ -125,7 +146,7 @@ namespace TemplateBuilder
                             {
                                 foreach (XmlNode groupNode in templateNodeChild.ChildNodes)
                                 {
-                                    if ((groupNode is XmlElement) && (groupNode.HasChildNodes))
+                                    if (groupNode is XmlElement)
                                     {
                                         string maxRepeats = null;
                                         try
@@ -137,7 +158,8 @@ namespace TemplateBuilder
                                         PromptGroup promptGroup = new PromptGroup(
                                             groupNode.Attributes["name"].Value,
                                             groupNode.Attributes["repeatable"].Value,
-                                            maxRepeats);
+                                            maxRepeats,
+                                            this);
 
                                         //Process prompts
                                         foreach (XmlNode promptNode in groupNode.ChildNodes)

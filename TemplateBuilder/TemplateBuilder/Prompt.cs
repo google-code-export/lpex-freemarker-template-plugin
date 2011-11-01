@@ -25,7 +25,13 @@ namespace TemplateBuilder
         public string UncheckedValue { get; set; }
         public string DateFormat { get; set; }
 
-        public Prompt() {}
+        public Prompt()
+        {
+            this.Name = "PromptName";
+            this.Type = PromptType.TEXT;
+            this.Label = "Label here";
+            this.Parent = null;
+        }
 
         public Prompt(string name, PromptType type, string label, PromptGroup parent)
         {
@@ -34,8 +40,8 @@ namespace TemplateBuilder
             this.Label = label;
             this.Parent = parent;
 
-            this.Description = "";
-            this.Hint = "";
+            this.Description = "Description here";
+            this.Hint = "Hint here";
         }
 
         public void SetTypeFromString(string type)
@@ -45,6 +51,16 @@ namespace TemplateBuilder
             else if (type == "checkbox") Type = PromptType.CHECKBOX;
             else if (type == "date") Type = PromptType.DATE;
             else Type = PromptType.TEXT;
+        }
+
+        private void callRenameHandler(string newName)
+        {
+            try
+            {
+                if (Parent.Parent.promptRenameHandler != null)
+                    Parent.Parent.promptRenameHandler(this, newName);
+            }
+            catch { }
         }
 
         private string _Name;
@@ -58,6 +74,7 @@ namespace TemplateBuilder
                 }
                 else
                 {
+                    callRenameHandler(value);
                     this._Name = value;
                 }
             }
@@ -68,8 +85,25 @@ namespace TemplateBuilder
         {
             get
             {
-                return "${" + this.Parent.Name + "." + this._Name + "}";
+                return GetVariableName(this.Parent.Name, this.Name);
             }
+        }
+
+        public static string GetVariableName(string promptGroupName, string promtName)
+        {
+            return "${" + promptGroupName + "." + promtName + "}";
+        }
+
+        private void callDeleteHandler()
+        {
+            if (Parent.Parent.beforePromptDeleteHandler != null)
+                Parent.Parent.beforePromptDeleteHandler(this);
+        }
+
+        public void Remove()
+        {
+            callDeleteHandler();
+            this.Parent.Remove(this);
         }
     }
 }

@@ -26,8 +26,23 @@ namespace TemplateBuilder
         public string FileType { get; set; }
         public string FileTypeName { get; set; }
         public string Data { get; set; }
-        public StringCollection RecentFiles { get; set; }
 
+        private string currentDirectory = Application.ExecutablePath;
+
+        private StringCollection _RecentFiles;
+        public StringCollection RecentFiles
+        {
+            set
+            {
+                this._RecentFiles = value;
+                foreach (string path in _RecentFiles)
+                {
+                    currentDirectory = Path.GetDirectoryName(path);
+                    break;
+                }
+            }
+            get { return this._RecentFiles; }
+        }
 
         private bool _Changed;
         public bool Changed
@@ -102,7 +117,7 @@ namespace TemplateBuilder
             OpenFileDialog openDlg = new OpenFileDialog();
             if (FilePath == string.Empty)
             {
-                openDlg.InitialDirectory = Application.ExecutablePath;
+                openDlg.InitialDirectory = currentDirectory;
             }
             else
             {
@@ -170,6 +185,8 @@ namespace TemplateBuilder
             {
                 if (SaveAs())
                 {
+                    Changed = false;
+                    IsNew = false;
                     if (afterFileSavedHandler != null)
                         afterFileSavedHandler();
                     return true;
@@ -182,6 +199,7 @@ namespace TemplateBuilder
                 {
                     updateRecentFiles();
                     Changed = false;
+                    IsNew = false;
                     if (updateStatus != null)
                         updateStatus("Saved the file.");
                     if (afterFileSavedHandler != null)
@@ -199,10 +217,15 @@ namespace TemplateBuilder
 
         public bool SaveAs()
         {
+            if (beforeFileSavedHandler != null)
+                beforeFileSavedHandler();
             if (saveToPath(promptSaveAs()))
             {
                 updateRecentFiles();
                 Changed = false;
+                IsNew = false;
+                if (currentFileChanged != null)
+                    currentFileChanged(FilePath, FileName);
                 if (updateStatus != null)
                     updateStatus("Saved the file.");
                 return true;
@@ -246,7 +269,7 @@ namespace TemplateBuilder
         {
             //Prompt the user with a file save dialog then return the path
             SaveFileDialog saveDlg = new SaveFileDialog();
-            saveDlg.InitialDirectory = Application.ExecutablePath;
+            saveDlg.InitialDirectory = currentDirectory;
             saveDlg.Title = "Save As...";
             saveDlg.AddExtension = true;
             saveDlg.DefaultExt = FileType;
@@ -272,7 +295,7 @@ namespace TemplateBuilder
             Exception error = null;
             try
             {
-                System.IO.FileInfo file = new System.IO.FileInfo(FilePath);
+                System.IO.FileInfo file = new System.IO.FileInfo(path);
                 System.IO.StreamWriter streamWriter = file.CreateText();
                 streamWriter.WriteLine(Data);
                 streamWriter.Close();

@@ -40,15 +40,34 @@ namespace TemplateBuilder
             this.templateEditor.ActiveTextAreaControl.TextArea.DragOver += new System.Windows.Forms.DragEventHandler(this.templateEditor_DragOver);
             this.templateEditor.ActiveTextAreaControl.TextArea.KeyUp += new System.Windows.Forms.KeyEventHandler(this.templateEditor_KeyUp);
 
+            //Document change handlers
             doc.newFileHandler = handleNewFileCreation;
             doc.recentFilesChangedHandler = updateRecentFiles;
             doc.currentFileChanged = updateCurrentFile;
             doc.updateStatus = updateStatus;
             doc.openedFileHandler = handleFileOpen;
             doc.beforeFileSavedHandler = handleBeforeFileSave;
+            doc.afterFileSavedHandler = handleAfterFileSave;
             doc.fileChangedHandler = handleFileChanged;
 
+            //Prompt change handlers
+            template.promptRenameHandler = handlePromptRename;
+            template.beforePromptDeleteHandler = handleBeforePromptDelete;
+
+            //Get the recent files from the app settings file
+            doc.RecentFiles = TemplateBuilder.Properties.Settings.Default.recentDocuments;
+
+            foreach (string path in doc.RecentFiles)
+            {
+                doc.Open(path);
+                break;
+            }
+
+            if (template.promptRenameHandler == null)
+                MessageBox.Show("Rename handler erased.");
+
             //doc.Open(Path.GetDirectoryName(Application.ExecutablePath) + @"\PublicProcedure.ftl");
+            //doc.New();
 
             TreeViewClickHandler.editor_pg = this.editor_pg;
 
@@ -67,6 +86,8 @@ namespace TemplateBuilder
         private void handleNewFileCreation()
         {
             template = new Template();
+            template.promptRenameHandler = handlePromptRename;
+            template.beforePromptDeleteHandler = handleBeforePromptDelete;
             refreshTreeView();
             editor_pg.SelectedObject = null;
             templateEditor.Document.TextContent = "";
@@ -77,6 +98,11 @@ namespace TemplateBuilder
         {
             doc.Data = template.Output;
             refreshAllFromOpenDocument();
+        }
+
+        private void handleAfterFileSave()
+        {
+            updateFormTitle(doc.FileName);
         }
 
         private void updateRecentFiles(StringCollection recentFiles)
@@ -106,9 +132,26 @@ namespace TemplateBuilder
             updateFormTitle(doc.FileName);
         }
 
+        private void handlePromptRename(Prompt prompt, string newName)
+        {
+            string oldVariableName = prompt.VariableName;
+            string newVariableName = Prompt.GetVariableName(prompt.Parent.Name, newName);
+            template.TemplateText = template.TemplateText.Replace(oldVariableName, newVariableName);
+            refreshTemplateText();
+        }
+
+        private void handleBeforePromptDelete(Prompt prompt)
+        {
+            string oldVariableName = prompt.VariableName;
+            template.TemplateText = template.TemplateText.Replace(oldVariableName, "");
+            refreshTemplateText();
+        }
+
         private void refreshAllFromOpenDocument()
         {
             template = new Template();
+            template.promptRenameHandler = handlePromptRename;
+            template.beforePromptDeleteHandler = handleBeforePromptDelete;
             template.RawText = doc.Data;
             updateFormTitle(doc.FileName);
             refreshTreeView();
@@ -172,7 +215,7 @@ namespace TemplateBuilder
         {
             recentFilesToolStripMenuItem.Enabled = false;
             recentFilesToolStripMenuItem.DropDownItems.Clear();
-            foreach (string path in TemplateBuilder.Properties.Settings.Default.recentDocuments)
+            foreach (string path in doc.RecentFiles)
             {
                 recentFilesToolStripMenuItem.Enabled = true;
                 ToolStripMenuItem item = new ToolStripMenuItem(PathShortener(path));
@@ -216,6 +259,10 @@ namespace TemplateBuilder
             }
             catch { }
 
+            TreeNode templateNode = new TreeNode(template.Name, Icons.SCRIPT, Icons.SCRIPT);
+            templateNode.Tag = BuildObjectIDPack(template, "template", new NodeClicker(TreeViewClickHandler.Template_Click));
+            templateNode.Name = template.Name;
+
             int icon = 0;
             foreach (PromptGroup promptGroup in template)
             {
@@ -255,8 +302,9 @@ namespace TemplateBuilder
                     promptGroupNode.Nodes.Add(promptNode);
                 }
 
-                documentTree.Nodes.Add(promptGroupNode);
+                templateNode.Nodes.Add(promptGroupNode);
             }
+            documentTree.Nodes.Add(templateNode);
 
             documentTree.ExpandAll();
             try
@@ -265,6 +313,8 @@ namespace TemplateBuilder
             }
             catch { }
             documentTree.EndUpdate();
+
+            doc.Data = template.Output;
         }
 
         public void reportProgress(int progress, string action)
@@ -324,6 +374,7 @@ namespace TemplateBuilder
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             doc.SaveAs();
+            refreshAllFromOpenDocument();
         }
 
         private void newFile_btn_Click(object sender, EventArgs e)
@@ -338,7 +389,7 @@ namespace TemplateBuilder
 
         private void addPromptGroup_btn_Click(object sender, EventArgs e)
         {
-            template.Add(new PromptGroup("Test"));
+            template.Add(new PromptGroup("NewPromptGroup", template));
             refreshTreeView();
         }
 
@@ -449,6 +500,9 @@ namespace TemplateBuilder
                 textArea.SelectionManager.ClearSelection();
                 InsertString(textArea, offset, prompt.VariableName);
                 textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
+                template.TemplateText = textArea.Document.TextContent;
+                doc.Changed = true;
+                updateFormTitle(doc.FileName);
             }
             finally
             {
@@ -544,12 +598,31 @@ namespace TemplateBuilder
             template.TemplateText = textArea.Document.TextContent;
             doc.Changed = true;
         }
-        #endregion
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        private void deletePromptMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TreeNode node = documentTree.SelectedNode;
+                Hashtable idPack = node.Tag as Hashtable;
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    prompt.Remove();
+                    refreshTreeView();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error creating prompt: " + ex.Message);
+            }
+        }
+        #endregion
     }
 
     public static class Icons

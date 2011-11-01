@@ -21,5 +21,11 @@ namespace TemplateBuilder
             Prompt castedObject = data as Prompt;
             editor_pg.SelectedObject = castedObject;
         }
+
+        public static void Template_Click(object data)
+        {
+            Template castedObject = data as Template;
+            editor_pg.SelectedObject = castedObject;
+        }
     }
 }

@@ -8,10 +8,11 @@ namespace TemplateBuilder
 {
     public class PromptGroup : List<Prompt>
     {
+        public Template Parent { get; set; }
         public const bool REPEATABLE = true;
         public const bool NOT_REPEATABLE = false;
 
-        public PromptGroup(string name)
+        public PromptGroup(string name, Template parent)
         {
             try
             {
@@ -22,11 +23,12 @@ namespace TemplateBuilder
                 throw e;
             }
 
+            Parent = parent;
             Repeatable = false;
             MaxRepeats = 0;
         }
 
-        public PromptGroup(string name, bool repeatable, int maxRepeats)
+        public PromptGroup(string name, bool repeatable, int maxRepeats, Template parent)
         {
             try
             {
@@ -37,11 +39,12 @@ namespace TemplateBuilder
                 throw e;
             }
 
+            Parent = parent;
             Repeatable = repeatable;
             MaxRepeats = maxRepeats;
         }
 
-        public PromptGroup(string name, string repeatable, string maxRepeats)
+        public PromptGroup(string name, string repeatable, string maxRepeats, Template parent)
         {
             try
             {
@@ -52,6 +55,7 @@ namespace TemplateBuilder
                 throw e;
             }
 
+            Parent = parent;
             SetRepeatableFromString(repeatable);
             int.TryParse(maxRepeats, out _MaxRepeats);
         }
