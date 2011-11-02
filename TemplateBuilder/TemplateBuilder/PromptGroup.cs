@@ -11,6 +11,7 @@ namespace TemplateBuilder
         public Template Parent { get; set; }
         public const bool REPEATABLE = true;
         public const bool NOT_REPEATABLE = false;
+        public int OrderKey { get; set; }
 
         public PromptGroup(string name, Template parent)
         {
@@ -74,6 +75,11 @@ namespace TemplateBuilder
             {
                 Repeatable = false;
             }
+        }
+
+        public void SetMaxRepeatsFromString(string maxRepeats)
+        {
+            int.TryParse(maxRepeats, out _MaxRepeats);
         }
 
         private int _MaxRepeats;

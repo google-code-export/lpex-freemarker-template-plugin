@@ -250,6 +250,14 @@ namespace TemplateBuilder
 
         private void refreshTreeView()
         {
+            foreach(PromptGroup pg in template)
+            {
+                template.Sort(delegate(PromptGroup p1, PromptGroup p2) { return p1.OrderKey.CompareTo(p2.OrderKey); });
+                foreach (Prompt p in pg)
+                {
+                    pg.Sort(delegate(Prompt p1, Prompt p2) { return p1.OrderKey.CompareTo(p2.OrderKey); });
+                }
+            }
             documentTree.BeginUpdate();
             documentTree.Nodes.Clear();
             int topNode = 0;
@@ -401,19 +409,24 @@ namespace TemplateBuilder
         private TreeNode m_OldSelectNode;
         private void documentTree_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            // Point where the mouse is clicked.
+            // select the node the mouse is over through code. The select event is not fired if its the same
+            // node. Only act if it's the RMB.
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
             Point p = new Point(e.X, e.Y);
 
-            // Get the node that the user has clicked.
-            TreeNode node = documentTree.GetNodeAt(p);
+            // Store the selected node (can deselect a node).
+            documentTree.SelectedNode = documentTree.GetNodeAt(e.X, e.Y);
+            TreeNode node = documentTree.SelectedNode;
 
             // Show menu only if the right mouse button is clicked.
             if (e.Button == MouseButtons.Right)
             {
-
                 if (node != null)
                 {
-
                     // Select the node the user has clicked.
                     // The node appears selected until the menu is displayed on the screen.
                     m_OldSelectNode = documentTree.SelectedNode;
@@ -438,13 +451,25 @@ namespace TemplateBuilder
             }
         }
 
-        private void editor_pg_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void documentTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            refreshTreeView();
+            try
+            {
+                Hashtable idPack = e.Node.Tag as Hashtable;
+                NodeClicker clicker = idPack["ClickHandler"] as NodeClicker;
+                editor_pg.SelectedObject = idPack["Data"];
+                clicker(idPack["Data"]);
+            }
+            catch { }
         }
 
         private void documentTree_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Right)
+            {
+                return;
+            }
+
             // Get the tree.
             TreeView tree = (TreeView)sender;
 
@@ -458,6 +483,11 @@ namespace TemplateBuilder
                 //Enable drag from the tree view
                 tree.DoDragDrop(node.Clone(), DragDropEffects.Copy);
             }
+        }
+
+        private void editor_pg_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            refreshTreeView();
         }
 
         private void templateEditor_DragDrop(object sender, DragEventArgs e)
@@ -561,18 +591,6 @@ namespace TemplateBuilder
             catch { }
         }
 
-        private void documentTree_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            try
-            {
-                Hashtable idPack = e.Node.Tag as Hashtable;
-                NodeClicker clicker = idPack["ClickHandler"] as NodeClicker;
-                editor_pg.SelectedObject = idPack["Data"];
-                clicker(idPack["Data"]);
-            }
-            catch { }
-        }
-
         private void addPromptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -622,7 +640,65 @@ namespace TemplateBuilder
                 MessageBox.Show("Error creating prompt: " + ex.Message);
             }
         }
+
+        private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TreeNode node = documentTree.SelectedNode;
+                Hashtable idPack = node.Tag as Hashtable;
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    prompt.OrderKey--;
+                    refreshTreeView();
+                }
+                else if ((string)idPack["Type"] == "promptgroup")
+                {
+                    PromptGroup promptGroup = (PromptGroup)idPack["Data"];
+                    int savedOrderKey = promptGroup.OrderKey;
+                    promptGroup.OrderKey = promptGroup.OrderKey - 2;
+                    doc.Changed = true;
+                    updateFormTitle(doc.FileName);
+                    //promptGroup.Parent.ForEach(delegate(PromptGroup p) { if (p.OrderKey == promptGroup.OrderKey) { p.OrderKey = savedOrderKey; } });
+                    refreshTreeView();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error reordering: " + ex.Message);
+            }
+        }
         #endregion
+
+        private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TreeNode node = documentTree.SelectedNode;
+                Hashtable idPack = node.Tag as Hashtable;
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    prompt.OrderKey++;
+                    refreshTreeView();
+                }
+                else if ((string)idPack["Type"] == "promptgroup")
+                {
+                    PromptGroup promptGroup = (PromptGroup)idPack["Data"];
+                    int savedOrderKey = promptGroup.OrderKey;
+                    promptGroup.OrderKey = promptGroup.OrderKey + 2;
+                    doc.Changed = true;
+                    updateFormTitle(doc.FileName);
+                    //promptGroup.Parent.ForEach(delegate(PromptGroup p) { if (p.OrderKey == promptGroup.OrderKey) { p.OrderKey = savedOrderKey; } });
+                    refreshTreeView();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error reordering: " + ex.Message);
+            }
+        }
     }
 
     public static class Icons

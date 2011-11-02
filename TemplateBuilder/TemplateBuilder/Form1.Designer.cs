@@ -75,8 +75,14 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuPromptGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.moveUpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveDownToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.addPromptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPrompt = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.deletePromptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -552,28 +558,72 @@
             // menuPromptGroup
             // 
             this.menuPromptGroup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.moveUpToolStripMenuItem1,
+            this.moveDownToolStripMenuItem1,
+            this.toolStripMenuItem3,
             this.addPromptToolStripMenuItem});
             this.menuPromptGroup.Name = "contextMenuStrip1";
-            this.menuPromptGroup.Size = new System.Drawing.Size(142, 26);
+            this.menuPromptGroup.Size = new System.Drawing.Size(153, 98);
+            // 
+            // moveUpToolStripMenuItem1
+            // 
+            this.moveUpToolStripMenuItem1.Name = "moveUpToolStripMenuItem1";
+            this.moveUpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.moveUpToolStripMenuItem1.Text = "Move Up";
+            this.moveUpToolStripMenuItem1.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
+            // 
+            // moveDownToolStripMenuItem1
+            // 
+            this.moveDownToolStripMenuItem1.Name = "moveDownToolStripMenuItem1";
+            this.moveDownToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.moveDownToolStripMenuItem1.Text = "Move Down";
+            this.moveDownToolStripMenuItem1.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
             // 
             // addPromptToolStripMenuItem
             // 
             this.addPromptToolStripMenuItem.Name = "addPromptToolStripMenuItem";
-            this.addPromptToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.addPromptToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addPromptToolStripMenuItem.Text = "Add Prompt";
             this.addPromptToolStripMenuItem.Click += new System.EventHandler(this.addPromptToolStripMenuItem_Click);
             // 
             // menuPrompt
             // 
             this.menuPrompt.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.moveUpToolStripMenuItem,
+            this.moveDownToolStripMenuItem,
+            this.toolStripMenuItem2,
             this.deletePromptMenuItem});
             this.menuPrompt.Name = "contextMenuStrip1";
-            this.menuPrompt.Size = new System.Drawing.Size(153, 48);
+            this.menuPrompt.Size = new System.Drawing.Size(142, 76);
+            // 
+            // moveUpToolStripMenuItem
+            // 
+            this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.moveUpToolStripMenuItem.Text = "Move Up";
+            this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
+            // 
+            // moveDownToolStripMenuItem
+            // 
+            this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.moveDownToolStripMenuItem.Text = "Move Down";
+            this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(138, 6);
             // 
             // deletePromptMenuItem
             // 
             this.deletePromptMenuItem.Name = "deletePromptMenuItem";
-            this.deletePromptMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deletePromptMenuItem.Size = new System.Drawing.Size(141, 22);
             this.deletePromptMenuItem.Text = "Delete";
             this.deletePromptMenuItem.Click += new System.EventHandler(this.deletePromptMenuItem_Click);
             // 
@@ -670,6 +720,12 @@
         private System.Windows.Forms.ToolStripMenuItem deletePromptMenuItem;
         private System.Windows.Forms.TabPage tabPage2;
         private ICSharpCode.TextEditor.TextEditorControl templateEditor;
+        private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 
 
     }

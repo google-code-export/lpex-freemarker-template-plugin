@@ -18,30 +18,36 @@ namespace TemplateBuilder
 
         public PromptGroup Parent { get; set; }
         public PromptType Type { get; set; }
+        public int OrderKey { get; set; }
         public string Label { get; set; }
         public string Description { get; set; }
         public string Hint { get; set; }
         public string CheckedValue { get; set; }
         public string UncheckedValue { get; set; }
         public string DateFormat { get; set; }
+        public string DefaultValue { get; set; }
 
         public Prompt()
         {
             this.Name = "PromptName";
             this.Type = PromptType.TEXT;
             this.Label = "Label here";
+            this.DefaultValue = "Default here";
             this.Parent = null;
+            this.OrderKey = 0;
         }
 
         public Prompt(string name, PromptType type, string label, PromptGroup parent)
         {
             this.Name = name;
             this.Type = type;
-            this.Label = label;
             this.Parent = parent;
+            this.OrderKey = Parent.Count;
 
             this.Description = "Description here";
             this.Hint = "Hint here";
+            this.Label = "Label here";
+            this.DefaultValue = "Default here";
         }
 
         public void SetTypeFromString(string type)

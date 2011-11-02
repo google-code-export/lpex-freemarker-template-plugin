@@ -155,11 +155,10 @@ namespace TemplateBuilder
                                         }
                                         catch { }
 
-                                        PromptGroup promptGroup = new PromptGroup(
-                                            groupNode.Attributes["name"].Value,
-                                            groupNode.Attributes["repeatable"].Value,
-                                            maxRepeats,
-                                            this);
+                                        PromptGroup promptGroup = new PromptGroup(groupNode.Attributes["name"].Value, this);
+                                        promptGroup.SetRepeatableFromString(groupNode.Attributes["repeatable"].Value);
+                                        promptGroup.SetMaxRepeatsFromString(maxRepeats);
+                                        promptGroup.OrderKey = this.Count;
 
                                         //Process prompts
                                         foreach (XmlNode promptNode in groupNode.ChildNodes)
@@ -184,6 +183,7 @@ namespace TemplateBuilder
         {
 		    Prompt prompt = new Prompt();
             prompt.Parent = promptGroup;
+            prompt.OrderKey = promptGroup.Count;
             foreach (XmlNode promptChildNode in promptNode.ChildNodes)
             {
                 if (promptChildNode.Name == "type")
