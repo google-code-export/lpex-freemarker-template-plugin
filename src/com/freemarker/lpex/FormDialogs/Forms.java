@@ -137,6 +137,25 @@ public class Forms implements Serializable {
 			//Suppress this error and just use an empty string
 			prompt.setHint("");
 		}
+		try {
+			Object defaultObject = null;
+			String defaultText = promptElement.getElementsByTagName("default").item(0).getTextContent();
+			if (prompt.getType() == InputType.CHECKBOX) {
+				if (defaultText == "checked") {
+					defaultObject = new Boolean(true);
+				}else{
+					defaultObject = new Boolean(false);
+				}
+			}else if (prompt.getType() == InputType.MULTILINE) {
+				defaultObject = defaultText;
+			}else if (prompt.getType() == InputType.TEXT) {
+				defaultObject = defaultText;
+			}
+			prompt.setDefaultValue(defaultObject);
+		} catch (Exception e) {
+			//Suppress this error and just use an empty string
+			prompt.setDefaultValue(null);
+		}
 		
 		//Apply the special attributes for some types
 		parseTypeOptions(promptElement, prompt);
@@ -248,8 +267,9 @@ public class Forms implements Serializable {
 			final Shell parentShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			
 			// Draw the prompt using SWT
-			final Shell shell = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+			final Shell shell = new Shell(parentShell, SWT.TITLE | SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 			shell.setSize(600, 450);
+			shell.setText(this.name + " - " + promptGroup.getName());
 			shell.setLocation(200, 200);
 			shell.setLayout(new GridLayout(2, false));
 

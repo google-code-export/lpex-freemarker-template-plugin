@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -276,11 +277,12 @@ public class Prompt implements Serializable {
 		text.setData("promptName", this.name);
 		text.setData("repeatIndex", this.currentRepeat);
 		text.setData("hint", this.hint);
+		text.setData("default", this.defaultValue);
 
 		//Choose to show the hint or the default value
 		try {
 			String defaultText = (String) defaultValue;
-			if ((defaultText == "") || (defaultText == null)) {
+			if ((defaultText.equals("")) || (defaultText == null)) {
 				if (hint != "") {
 					addAutoClearingHint(text, hint);
 				}
@@ -320,6 +322,7 @@ public class Prompt implements Serializable {
 				}
 			}
 		});
+		text.notifyListeners(SWT.Modify, new Event());
 	}
 	
 	private void renderMultilineTextInput() {
@@ -341,11 +344,12 @@ public class Prompt implements Serializable {
 		text.setData("promptName", this.name);
 		text.setData("repeatIndex", this.currentRepeat);
 		text.setData("hint", this.hint);
+		text.setData("default", this.defaultValue);
 		
 		//Choose to show the hint or the default value
 		try {
 			String defaultText = (String) defaultValue;
-			if ((defaultText == "") || (defaultText == null)) {
+			if ((defaultText.equals("")) || (defaultText == null)) {
 				if (hint != "") {
 					addAutoClearingHint(text, hint);
 				}
@@ -399,6 +403,7 @@ public class Prompt implements Serializable {
 				}
 			}
 		});
+		text.notifyListeners(SWT.Modify, new Event());
 	}
 	
 	private void renderCheckboxInput() {
@@ -421,6 +426,11 @@ public class Prompt implements Serializable {
 		checkbox.setData("hint", this.hint);
 		checkbox.setData("checkedValue", this.checkedValue);
 		checkbox.setData("uncheckedValue", this.uncheckedValue);
+		try {
+			checkbox.setData("default", (Boolean)this.defaultValue);
+		} catch (Exception ex) {
+			checkbox.setData("default", false);
+		}
 		try {
 			Boolean checked = (Boolean) defaultValue;
 			checkbox.setSelection(checked);
@@ -458,6 +468,7 @@ public class Prompt implements Serializable {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
+		checkbox.notifyListeners(SWT.Modify, new Event());
 	}
 	
 	private void renderDateInput() {

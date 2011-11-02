@@ -117,8 +117,6 @@ public class LPEXManipulator {
 	}
 	
 	public String getTemplateFolderFromParser() {
-		PluginLogger.logger.info("Getting the parser...");
-
 		//Get the parser key for the current document
 		String parser = view.query("parser");
 		if (parser == null) {
@@ -136,10 +134,8 @@ public class LPEXManipulator {
 		{
 			try {
 				String[] mapping = readParserMapping(mappingStr);
-				PluginLogger.logger.info("\"" + mappingStr + "\" parsed to " + mapping[0] + " : " + mapping[1]);
 				if (mapping[0].toLowerCase().equals(parser.toLowerCase()))
 				{
-					PluginLogger.logger.info("  templateFolderName = " + mapping[1]);
 					templateFolderName = mapping[1];
 				}
 			} catch (Exception e)
