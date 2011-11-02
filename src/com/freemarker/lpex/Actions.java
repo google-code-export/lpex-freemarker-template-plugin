@@ -17,7 +17,17 @@ public class Actions {
 		
 		public void doAction(LpexView view) {
 			try {
-				String baseTemplateFolder = Activator.preferenceStore.getString(PreferenceConstants.P_TEMPLATES_DIR);
+				String baseTemplateFolder = "";
+				try {
+					baseTemplateFolder = Activator.preferenceStore.getString(PreferenceConstants.P_TEMPLATES_DIR);
+					if (!new File(baseTemplateFolder).exists())
+					{
+					   throw new FileNotFoundException("You must have a valid template directory set.");
+					}
+				} catch (Exception e) {
+					PluginLogger.logger.warning(StackTraceUtil.getStackTrace(e));
+					baseTemplateFolder = "c:/templates";
+				}
 				if (baseTemplateFolder == "") {
 					PluginLogger.logger.warning("No template directory set");
 			        view.doDefaultCommand("set messageText You must first set the templates directory in the settings");
@@ -26,9 +36,9 @@ public class Actions {
 				
 				LPEXManipulator lpexManipulator = new LPEXManipulator(view);
 				final String templateHint = lpexManipulator.getCursorWord();
-				String parser = lpexManipulator.getParser();
+				String templateFolderName = lpexManipulator.getTemplateFolderFromParser();
 				
-				File templateDirectory = new File(baseTemplateFolder + "/" + parser);
+				File templateDirectory = new File(baseTemplateFolder + "/" + templateFolderName);
 				FilenameFilter templateFilter = new FilenameFilter() { 
 					public boolean accept(File dir, String name) {
 						File file = new File(dir + "/" + name);
@@ -62,7 +72,7 @@ public class Actions {
 				
 				PluginLogger.logger.info("Selected: " + selectedTemplate);
 				
-				File templateFile = new File(baseTemplateFolder + "/" + parser + "/" + selectedTemplate + ".ftl");
+				File templateFile = new File(baseTemplateFolder + "/" + templateFolderName + "/" + selectedTemplate + ".ftl");
 				
 				LPEXTemplate lpexTemplate = new LPEXTemplate(templateFile);
 				

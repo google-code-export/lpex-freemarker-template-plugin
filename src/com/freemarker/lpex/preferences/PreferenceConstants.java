@@ -16,5 +16,7 @@ public class PreferenceConstants {
 	public static final String P_USE_CURRENT_DATE = "useCurrentDatePreference";
 
 	public static final String P_DATE_FORMAT = "dateFormatPreference";
+
+	public static final String P_PARSER_MAPPINGS = "parserMappings";
 	
 }

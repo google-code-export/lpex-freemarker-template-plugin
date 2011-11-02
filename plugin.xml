@@ -10,7 +10,14 @@
       <page
          class="com.freemarker.lpex.preferences.PreferencePage"
          id="com.freemarker.lpex.preferences.PreferencesPage"
-         name="LPEX FreeMarker Templates">
+         name="LPEX FreeMarker Templates"
+         category="com.ibm.lpex">
+      </page>
+      <page
+         class="com.freemarker.lpex.preferences.ParserAssociationPreferencePage"
+         id="com.freemarker.lpex.preferences.ParserAssociationPreferencePage"
+         name="Parser Associations"
+	     category="com.freemarker.lpex.preferences.PreferencesPage">
       </page>
    </extension>
    <extension

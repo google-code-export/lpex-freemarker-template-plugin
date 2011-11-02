@@ -27,17 +27,6 @@ public class Preload implements LpexPreload {
 	private void initPreferences() {
 		Activator.preferenceStore = Activator.getDefault().getPreferenceStore();
 		
-		//Setup the debug logger
-		/*if (Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH) != "") {
-			try {
-				PluginLogger.setup(Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH), Activator.preferenceStore.getString(PreferenceConstants.P_LOG_LEVEL));
-			} catch (IOException e) {}
-		}else{
-			try {
-				PluginLogger.setup("c:/com.freemarker.lpex.log", "all");
-			} catch (IOException e) {}
-		}*/
-		
 		try {
 			PluginLogger.setup(Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH), Activator.preferenceStore.getString(PreferenceConstants.P_LOG_LEVEL));
 		} catch (IOException e) {}

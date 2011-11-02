@@ -37,7 +37,11 @@ public class PluginLogger {
 			logger.removeHandler(fileTxt);
 		} catch (Exception e) {}
 		
-		fileTxt = new FileHandler(path, true);
+		try {
+			fileTxt = new FileHandler(path, true);
+		} catch (Exception e) {
+			path = "c:/com.freemarker.lpex.log";
+		}
 
 		// Create text Formatter
 		formatterTxt = new TextFormatter();

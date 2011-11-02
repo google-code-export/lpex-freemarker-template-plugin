@@ -1,5 +1,8 @@
 package com.freemarker.lpex;
 
+import java.util.StringTokenizer;
+
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
@@ -10,6 +13,11 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import com.freemarker.lpex.preferences.ParserAssociationPreferencePage;
+import com.freemarker.lpex.preferences.PreferenceConstants;
+import com.freemarker.lpex.utils.PluginLogger;
+import com.freemarker.lpex.utils.StackTraceUtil;
+import com.ibm.lpex.alef.preferences.ParserAssociationsPreferencePage;
 import com.ibm.lpex.core.LpexView;
 
 public class LPEXManipulator {
@@ -108,32 +116,51 @@ public class LPEXManipulator {
 		yellow.dispose();
 	}
 	
-	public String getParser() {
+	public String getTemplateFolderFromParser() {
+		PluginLogger.logger.info("Getting the parser...");
+
+		//Get the parser key for the current document
 		String parser = view.query("parser");
 		if (parser == null) {
 			String filename = view.query("name");
 			int dot = filename.lastIndexOf(".");
-			parser = filename.substring(dot);
+			parser = filename.substring(dot+1);
+			PluginLogger.logger.info("LPEX parser returned null so we used file extension instead from " + filename);
 		}
-		if (parser.equalsIgnoreCase("ILErpg")
-				|| parser.equalsIgnoreCase("ILErpgSql")
-				|| parser.equalsIgnoreCase(".SQLRPGLE")
-				|| parser.equalsIgnoreCase(".RPGLE")) {
-			parser = "rpg";
-		} else if (parser.equalsIgnoreCase("dds")
-				|| parser.equalsIgnoreCase(".PRTF")
-				|| parser.equalsIgnoreCase(".DSPF")
-				|| parser.equalsIgnoreCase(".PF")
-				|| parser.equalsIgnoreCase(".LF")) {
-			parser = "dds";
-		} else if (parser.equalsIgnoreCase("cl")
-				|| parser.equalsIgnoreCase(".CLP")
-				|| parser.equalsIgnoreCase(".CLLE")) {
-			parser = "cl";
-		} else {
-			parser = "unknown";
+		PluginLogger.logger.info("Parser: " + parser);
+		
+		String templateFolderName = "unknown";
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		String[] parserMappings = ParserAssociationPreferencePage.parseToArray(store.getString(PreferenceConstants.P_PARSER_MAPPINGS));
+		for (String mappingStr : parserMappings)
+		{
+			try {
+				String[] mapping = readParserMapping(mappingStr);
+				PluginLogger.logger.info("\"" + mappingStr + "\" parsed to " + mapping[0] + " : " + mapping[1]);
+				if (mapping[0].toLowerCase().equals(parser.toLowerCase()))
+				{
+					PluginLogger.logger.info("  templateFolderName = " + mapping[1]);
+					templateFolderName = mapping[1];
+				}
+			} catch (Exception e)
+			{
+				PluginLogger.logger.warning("Failed to load a parser mapping");
+				PluginLogger.logger.warning(StackTraceUtil.getStackTrace(e));
+			}
 		}
-		return parser;
+		PluginLogger.logger.info("Template folder: " + templateFolderName);
+		
+		return templateFolderName;
+	}
+	
+	private String[] readParserMapping(String mapping) {
+		StringTokenizer tokenizer = new StringTokenizer(mapping, "=");
+		int tokenCount = tokenizer.countTokens();
+		String[] elements = new String[tokenCount];
+		for (int i = 0; i < tokenCount; i++) {
+			elements[i] = tokenizer.nextToken();
+		}
+		return elements;
 	}
 
 	public String getCursorWord() {
