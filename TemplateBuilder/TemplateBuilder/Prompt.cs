@@ -91,13 +91,24 @@ namespace TemplateBuilder
         {
             get
             {
-                return GetVariableName(this.Parent.Name, this.Name);
+                return GetVariableName(this.Parent, this.Name);
             }
         }
 
-        public static string GetVariableName(string promptGroupName, string promtName)
+        public static string GetVariableName(PromptGroup promptGroup, string promtName)
         {
-            return "${" + promptGroupName + "." + promtName + "}";
+            string variable = "";
+            if (promptGroup.Repeatable)
+            {
+                variable = "\r\n<#list " + promptGroup.Name + ".repeats as var>\r\n";
+                variable += "${var." + promtName + "}\r\n";
+                variable += "</#list>";
+            }
+            else
+            {
+                variable = "${" + promptGroup.Name + "." + promtName + "}";
+            }
+            return variable;
         }
 
         private void callDeleteHandler()

@@ -15,3 +15,4 @@ C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Tem
 C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.write.1831.tlog
 C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.read.1850.tlog
 C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\GenerateResource.write.1850.tlog
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Debug\TemplateBuilder.AboutBox1.resources

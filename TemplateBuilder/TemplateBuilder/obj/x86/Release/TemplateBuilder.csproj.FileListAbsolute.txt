@@ -9,3 +9,4 @@ C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Tem
 C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.pdb
 C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.Form1.resources
 C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\bin\Release\ICSharpCode.TextEditor.dll
+C:\Documents and Settings\RNewton\Desktop\~Projects\0000 - WDSc Enhancements\Template Builder\TemplateBuilder\TemplateBuilder\obj\x86\Release\TemplateBuilder.AboutBox1.resources

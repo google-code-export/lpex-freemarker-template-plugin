@@ -16,6 +16,7 @@ namespace TemplateBuilder
     public delegate void BeforeFileSavedHandler();
     public delegate void AfterFileSavedHandler();
     public delegate void FileChangedHandler();
+    public delegate void DataChangedHandler();
 
     public class DocumentManager
     {
@@ -25,9 +26,31 @@ namespace TemplateBuilder
         public bool IsNew { get; set; }
         public string FileType { get; set; }
         public string FileTypeName { get; set; }
-        public string Data { get; set; }
 
         private string currentDirectory = Application.ExecutablePath;
+
+        public StatusUpdater updateStatus = null;
+        public OpenedFileHandler openedFileHandler = null;
+        public NewFileHandler newFileHandler = null;
+        public RecentFilesChangedHandler recentFilesChangedHandler = null;
+        public CurrentFileChangedHandler currentFileChanged = null;
+        public BeforeFileSavedHandler beforeFileSavedHandler = null;
+        public AfterFileSavedHandler afterFileSavedHandler = null;
+        public FileChangedHandler fileChangedHandler = null;
+        public DataChangedHandler dataChangedHandler = null;
+
+        //
+        private string _Data;
+        public string Data
+        {
+            set
+            {
+                this._Data = value;
+                if (dataChangedHandler != null)
+                    dataChangedHandler();
+            }
+            get { return this._Data; }
+        }
 
         private StringCollection _RecentFiles;
         public StringCollection RecentFiles
@@ -58,15 +81,6 @@ namespace TemplateBuilder
             }
             get { return this._Changed; }
         }
-
-        public StatusUpdater updateStatus = null;
-        public OpenedFileHandler openedFileHandler = null;
-        public NewFileHandler newFileHandler = null;
-        public RecentFilesChangedHandler recentFilesChangedHandler = null;
-        public CurrentFileChangedHandler currentFileChanged = null;
-        public BeforeFileSavedHandler beforeFileSavedHandler = null;
-        public AfterFileSavedHandler afterFileSavedHandler = null;
-        public FileChangedHandler fileChangedHandler = null;
 
         public DocumentManager(string fileType, string fileTypeName)
         {

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WindowsFormsApplication1")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("LPEX FreeMarker Template Builder")]
+[assembly: AssemblyDescription("Build templates in a WYSIWYG editor instead of modifying the xml and template text directly.\r\n\r\nhttp://freemarker.sourceforge.net/\r\nhttp://code.google.com/p/lpex-freemarker-template-plugin/")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Estes")]
-[assembly: AssemblyProduct("WindowsFormsApplication1")]
-[assembly: AssemblyCopyright("Copyright © Estes 2011")]
+[assembly: AssemblyCompany("Rob Newton")]
+[assembly: AssemblyProduct("LPEX FreeMarker Template Builder")]
+[assembly: AssemblyCopyright("OSS")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.3.0.0")]
+[assembly: AssemblyFileVersion("0.3.0.0")]

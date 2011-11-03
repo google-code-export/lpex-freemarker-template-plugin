@@ -14,6 +14,8 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using ICSharpCode.TextEditor.Document;
 using ICSharpCode.TextEditor;
+using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace TemplateBuilder
 {
@@ -49,6 +51,7 @@ namespace TemplateBuilder
             doc.beforeFileSavedHandler = handleBeforeFileSave;
             doc.afterFileSavedHandler = handleAfterFileSave;
             doc.fileChangedHandler = handleFileChanged;
+            doc.dataChangedHandler = handleDataChanged;
 
             //Prompt change handlers
             template.promptRenameHandler = handlePromptRename;
@@ -79,6 +82,7 @@ namespace TemplateBuilder
             }
 
             templateEditor.SetHighlighting("FTL");
+            templateSource.SetHighlighting("XML");
 
             BuildRecentFilesMenu();
         }
@@ -132,10 +136,15 @@ namespace TemplateBuilder
             updateFormTitle(doc.FileName);
         }
 
+        private void handleDataChanged()
+        {
+            this.templateSource.Text = doc.Data; 
+        }
+
         private void handlePromptRename(Prompt prompt, string newName)
         {
             string oldVariableName = prompt.VariableName;
-            string newVariableName = Prompt.GetVariableName(prompt.Parent.Name, newName);
+            string newVariableName = Prompt.GetVariableName(prompt.Parent, newName);
             template.TemplateText = template.TemplateText.Replace(oldVariableName, newVariableName);
             refreshTemplateText();
         }
@@ -409,6 +418,9 @@ namespace TemplateBuilder
         private TreeNode m_OldSelectNode;
         private void documentTree_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            // Reset the drag rectangle when the mouse button is raised.
+            dragBoxFromMouseDown = Rectangle.Empty; 
+
             // select the node the mouse is over through code. The select event is not fired if its the same
             // node. Only act if it's the RMB.
             if (e.Button != MouseButtons.Right)
@@ -463,19 +475,34 @@ namespace TemplateBuilder
             catch { }
         }
 
+        Rectangle dragBoxFromMouseDown; 
+
         private void documentTree_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                return;
-            }
-
             // Get the tree.
             TreeView tree = (TreeView)sender;
 
             // Get the node underneath the mouse.
             TreeNode node = tree.GetNodeAt(e.X, e.Y);
             tree.SelectedNode = node;
+
+            Size dragSize = SystemInformation.DragSize;
+
+            if (tree.SelectedNode != null)
+            {
+                // Creates a rectangle using the DragSize, with the mouse position being
+                // at the center of the rectangle.
+                dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width /2),
+                                                               e.Y - (dragSize.Height /2)), dragSize);
+            } else {
+                // Resets the rectangle if the mouse is not over a node in the tree
+                dragBoxFromMouseDown = Rectangle.Empty; 
+            }
+
+            if (e.Button == MouseButtons.Right)
+            {
+                return;
+            }
 
             // Start the drag-and-drop operation with a cloned copy of the node.
             if (node != null)
@@ -494,24 +521,24 @@ namespace TemplateBuilder
         {
             TreeNode node = (TreeNode)e.Data.GetData(typeof(TreeNode));
             ICSharpCode.TextEditor.TextArea textArea = (ICSharpCode.TextEditor.TextArea)sender;
-
-            Hashtable idPack = node.Tag as Hashtable;
-            switch (idPack["Type"] as string)
-            {
-                case "promptgroup":
-                    break;
-                case "prompt":
-                    break;
-            }
-
-            //Build the variable to insert here
-            Prompt prompt = idPack["Data"] as Prompt;
-
-            Point p = textArea.PointToClient(new Point(e.X, e.Y));
-            textArea.BeginUpdate();
-            textArea.Document.UndoStack.StartUndoGroup();
             try
             {
+                Hashtable idPack = node.Tag as Hashtable;
+                switch (idPack["Type"] as string)
+                {
+                    case "promptgroup":
+                        return;
+                    case "prompt":
+                        break;
+                }
+
+                //Build the variable to insert here
+                Prompt prompt = idPack["Data"] as Prompt;
+
+                Point p = textArea.PointToClient(new Point(e.X, e.Y));
+                textArea.BeginUpdate();
+                textArea.Document.UndoStack.StartUndoGroup();
+
                 int offset = textArea.Caret.Offset;
                 if (e.Data.GetDataPresent(typeof(DefaultSelection)))
                 {
@@ -527,12 +554,7 @@ namespace TemplateBuilder
                         offset -= len;
                     }
                 }
-                textArea.SelectionManager.ClearSelection();
-                InsertString(textArea, offset, prompt.VariableName);
-                textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
-                template.TemplateText = textArea.Document.TextContent;
-                doc.Changed = true;
-                updateFormTitle(doc.FileName);
+                insertIntoTemplateEditor(textArea, offset, prompt.VariableName);
             }
             finally
             {
@@ -541,12 +563,22 @@ namespace TemplateBuilder
             }
         }
 
+        void insertIntoTemplateEditor(TextArea textArea, int offset, string text)
+        {
+            textArea.SelectionManager.ClearSelection();
+            InsertString(textArea, offset, text);
+            textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
+            template.TemplateText = textArea.Document.TextContent;
+            doc.Changed = true;
+            updateFormTitle(doc.FileName);
+        }
+
         void InsertString(ICSharpCode.TextEditor.TextArea textArea, int offset, string str)
         {
             textArea.Document.Insert(offset, str);
-            textArea.SelectionManager.SetSelection(new DefaultSelection(textArea.Document,
-                                                                        textArea.Document.OffsetToPosition(offset),
-                                                                        textArea.Document.OffsetToPosition(offset + str.Length)));
+            //textArea.SelectionManager.SetSelection(new DefaultSelection(textArea.Document,
+            //                                                            textArea.Document.OffsetToPosition(offset),
+            //                                                            textArea.Document.OffsetToPosition(offset + str.Length)));
             textArea.Caret.Position = textArea.Document.OffsetToPosition(offset + str.Length);
             textArea.Refresh();
         }
@@ -574,7 +606,6 @@ namespace TemplateBuilder
 
         private void documentTree_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-
             // Point where the mouse is clicked.
             Point p = new Point(e.X, e.Y);
 
@@ -584,12 +615,28 @@ namespace TemplateBuilder
             try
             {
                 Hashtable idPack = node.Tag as Hashtable;
-                NodeClicker clicker = idPack["ClickHandler"] as NodeClicker;
-                editor_pg.SelectedObject = idPack["Data"];
-                clicker(idPack["Data"]);
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    insertIntoTemplateEditor(this.templateEditor.ActiveTextAreaControl.TextArea, this.templateEditor.ActiveTextAreaControl.TextArea.Caret.Offset, prompt.VariableName);
+                }
             }
             catch { }
         }
+
+        private void documentTree_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                // If the mouse moves outside the rectangle, start the drag.
+                if (dragBoxFromMouseDown != Rectangle.Empty &&
+                    !dragBoxFromMouseDown.Contains(e.X, e.Y))
+                {
+                    Console.WriteLine("Start drag");
+                    documentTree.DoDragDrop(documentTree.SelectedNode, DragDropEffects.All);
+                }
+            }
+        } 
 
         private void addPromptToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -647,21 +694,30 @@ namespace TemplateBuilder
             {
                 TreeNode node = documentTree.SelectedNode;
                 Hashtable idPack = node.Tag as Hashtable;
+                bool foundLower = false;
                 if ((string)idPack["Type"] == "prompt")
                 {
                     Prompt prompt = (Prompt)idPack["Data"];
-                    prompt.OrderKey--;
-                    refreshTreeView();
+                    prompt.Parent.ForEach(delegate(Prompt p) { if (p.OrderKey == prompt.OrderKey - 1) { p.OrderKey = prompt.OrderKey; foundLower = true; } });
+                    if (foundLower)
+                    {
+                        prompt.OrderKey = prompt.OrderKey - 1;
+                        doc.Changed = true;
+                        updateFormTitle(doc.FileName);
+                        refreshTreeView();
+                    }
                 }
                 else if ((string)idPack["Type"] == "promptgroup")
                 {
                     PromptGroup promptGroup = (PromptGroup)idPack["Data"];
-                    int savedOrderKey = promptGroup.OrderKey;
-                    promptGroup.OrderKey = promptGroup.OrderKey - 2;
-                    doc.Changed = true;
-                    updateFormTitle(doc.FileName);
-                    //promptGroup.Parent.ForEach(delegate(PromptGroup p) { if (p.OrderKey == promptGroup.OrderKey) { p.OrderKey = savedOrderKey; } });
-                    refreshTreeView();
+                    promptGroup.Parent.ForEach(delegate(PromptGroup p) { if (p.OrderKey == promptGroup.OrderKey - 1) { p.OrderKey = promptGroup.OrderKey; foundLower = true; } });
+                    if (foundLower)
+                    {
+                        promptGroup.OrderKey = promptGroup.OrderKey - 1;
+                        doc.Changed = true;
+                        updateFormTitle(doc.FileName);
+                        refreshTreeView();
+                    }
                 }
             }
             catch (Exception ex)
@@ -669,7 +725,6 @@ namespace TemplateBuilder
                 MessageBox.Show("Error reordering: " + ex.Message);
             }
         }
-        #endregion
 
         private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -677,21 +732,30 @@ namespace TemplateBuilder
             {
                 TreeNode node = documentTree.SelectedNode;
                 Hashtable idPack = node.Tag as Hashtable;
+                bool foundHigher = false;
                 if ((string)idPack["Type"] == "prompt")
                 {
                     Prompt prompt = (Prompt)idPack["Data"];
-                    prompt.OrderKey++;
-                    refreshTreeView();
+                    prompt.Parent.ForEach(delegate(Prompt p) { if (p.OrderKey == prompt.OrderKey + 1) { p.OrderKey = prompt.OrderKey; foundHigher = true; } });
+                    if (foundHigher)
+                    {
+                        prompt.OrderKey = prompt.OrderKey + 1;
+                        doc.Changed = true;
+                        updateFormTitle(doc.FileName);
+                        refreshTreeView();
+                    }
                 }
                 else if ((string)idPack["Type"] == "promptgroup")
                 {
                     PromptGroup promptGroup = (PromptGroup)idPack["Data"];
-                    int savedOrderKey = promptGroup.OrderKey;
-                    promptGroup.OrderKey = promptGroup.OrderKey + 2;
-                    doc.Changed = true;
-                    updateFormTitle(doc.FileName);
-                    //promptGroup.Parent.ForEach(delegate(PromptGroup p) { if (p.OrderKey == promptGroup.OrderKey) { p.OrderKey = savedOrderKey; } });
-                    refreshTreeView();
+                    promptGroup.Parent.ForEach(delegate(PromptGroup p) { if (p.OrderKey == promptGroup.OrderKey + 1) { p.OrderKey = promptGroup.OrderKey; foundHigher = true; } });
+                    if (foundHigher)
+                    {
+                        promptGroup.OrderKey = promptGroup.OrderKey + 1;
+                        doc.Changed = true;
+                        updateFormTitle(doc.FileName);
+                        refreshTreeView();
+                    }
                 }
             }
             catch (Exception ex)
@@ -699,6 +763,101 @@ namespace TemplateBuilder
                 MessageBox.Show("Error reordering: " + ex.Message);
             }
         }
+
+        private void insertVariableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = documentTree.SelectedNode;
+            try
+            {
+                Hashtable idPack = node.Tag as Hashtable;
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    insertIntoTemplateEditor(this.templateEditor.ActiveTextAreaControl.TextArea, this.templateEditor.ActiveTextAreaControl.TextArea.Caret.Offset, prompt.VariableName);
+                }
+            }
+            catch { }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox1 about = new AboutBox1();
+            about.ShowDialog();
+        }
+
+        private static void openUrlInDefaultBrowser(string url)
+        {
+            try
+            {
+                string key = @"htmlfile\shell\open\command";
+                RegistryKey registryKey =
+                Registry.ClassesRoot.OpenSubKey(key, false);
+                // get default browser path
+                string browserPath = ((string)registryKey.GetValue(null, null)).Split('"')[1];
+                // launch default browser
+                Process.Start(browserPath, url);
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show(exp.Message);
+            }
+        }
+
+        private void projectPageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openUrlInDefaultBrowser("http://code.google.com/p/lpex-freemarker-template-plugin/");
+        }
+
+        private void freemarkerDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openUrlInDefaultBrowser("http://freemarker.sourceforge.net/docs/dgui.html");
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = documentTree.SelectedNode;
+            try
+            {
+                Hashtable idPack = node.Tag as Hashtable;
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    Prompt newPrompt = new Prompt("CopyOf" + prompt.Name, prompt.Type, "", prompt.Parent);
+                    newPrompt.CheckedValue = prompt.CheckedValue;
+                    newPrompt.DateFormat = prompt.DateFormat;
+                    newPrompt.DefaultValue = prompt.DefaultValue;
+                    newPrompt.Description = prompt.Description;
+                    newPrompt.Hint = prompt.Hint;
+                    newPrompt.Label = prompt.Label;
+                    newPrompt.UncheckedValue = prompt.UncheckedValue;
+                    newPrompt.OrderKey = prompt.OrderKey;
+                    prompt.Parent.Add(newPrompt);
+                    doc.Changed = true;
+                    refreshTreeView();
+                }
+            }
+            catch { }
+        }
+
+        private void insertNewPromptHereToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = documentTree.SelectedNode;
+            try
+            {
+                Hashtable idPack = node.Tag as Hashtable;
+                if ((string)idPack["Type"] == "prompt")
+                {
+                    Prompt prompt = (Prompt)idPack["Data"];
+                    Prompt newPrompt = new Prompt("NewPrompt", Prompt.PromptType.TEXT, "LabelHere", prompt.Parent);
+                    newPrompt.OrderKey = prompt.OrderKey;
+                    prompt.Parent.Add(newPrompt);
+                    doc.Changed = true;
+                    refreshTreeView();
+                }
+            }
+            catch { }
+        }
+        #endregion
     }
 
     public static class Icons

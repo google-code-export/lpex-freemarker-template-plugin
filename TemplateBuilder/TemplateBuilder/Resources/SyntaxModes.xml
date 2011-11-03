@@ -2,4 +2,7 @@
 	<Mode file       = "Freemarker.xshd"
 	      name       = "FTL"
 	      extensions = ".ftl"/>
+  <Mode file       = "XML.xshd"
+	      name       = "XML"
+	      extensions = ".xml"/>
 </SyntaxModes>

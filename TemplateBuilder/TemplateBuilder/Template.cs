@@ -38,9 +38,13 @@ namespace TemplateBuilder
             set
             {
                 this._RawText = value;
-                loadFormConfig();
-                loadTemplateText();
-                loadFromXML();
+                try
+                {
+                    loadFormConfig();
+                    loadTemplateText();
+                    loadFromXML();
+                }
+                catch { }
             }
             get
             {
@@ -56,7 +60,11 @@ namespace TemplateBuilder
             {
                 if ((this._FormConfigXML == string.Empty) ||
                     (this._FormConfigXML == null))
-                    loadFormConfig();
+                    try
+                    {
+                        loadFormConfig();
+                    }
+                    catch { }
                 return this._FormConfigXML;
             }
         }
