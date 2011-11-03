@@ -337,6 +337,37 @@ namespace TemplateBuilder
             return ToIndentedString(doc);
         }
 
+        public string GetDataModelAsString()
+        {
+            string dataModel = "(root)" + "\r\n";
+
+            foreach (PromptGroup promptGroup in this)
+            {
+                dataModel += " | \r\n";
+                dataModel += " +-" + promptGroup.Name + "\r\n";
+                if (promptGroup.Repeatable)
+                {
+                    dataModel += "    | \r\n";
+                    dataModel += "    +-repeats" + "\r\n";
+                }
+                foreach (Prompt prompt in promptGroup)
+                {
+                    if (promptGroup.Repeatable)
+                    {
+                        dataModel += "       | \r\n";
+                        dataModel += "       +-" + prompt.Name + "\r\n";
+                    }
+                    else
+                    {
+                        dataModel += "    | \r\n";
+                        dataModel += "    +-" + prompt.Name + "\r\n";
+                    }
+                }
+            }
+
+            return dataModel;
+        }
+
         private string ToIndentedString(XmlDocument doc)
         {
             var stringWriter = new StringWriter(new StringBuilder());

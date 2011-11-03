@@ -83,16 +83,18 @@ public class Actions {
 				lpexTemplate.initializeFormData();
 				
 				//Present the dialogs for the user to fill out
-				lpexTemplate.getForm().open();
-				
-				PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
-				PluginLogger.logger.info(lpexTemplate.formData.toString());
-				
-				//Merge the collected data with the template
-				lpexTemplate.merge();
-				
-				//Insert the merged template into the cursor position of the current LPEX document
-				lpexManipulator.addBlockTextAtCursorPosition(lpexTemplate.getResult());
+				if (lpexTemplate.getForm().open()) {
+					PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
+					PluginLogger.logger.info(lpexTemplate.formData.toString());
+					
+					//Merge the collected data with the template
+					lpexTemplate.merge();
+					
+					//Insert the merged template into the cursor position of the current LPEX document
+					lpexManipulator.addBlockTextAtCursorPosition(lpexTemplate.getResult());
+				}else{
+					PluginLogger.logger.info("Escaped the form early");
+				}
 				
 			} catch (TemplateException e) {
 				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));

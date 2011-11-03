@@ -62,7 +62,7 @@ namespace TemplateBuilder
 
             foreach (string path in doc.RecentFiles)
             {
-                doc.Open(path);
+                //doc.Open(path);
                 break;
             }
 
@@ -259,6 +259,7 @@ namespace TemplateBuilder
 
         private void refreshTreeView()
         {
+            dataModel.Text = template.GetDataModelAsString();
             foreach(PromptGroup pg in template)
             {
                 template.Sort(delegate(PromptGroup p1, PromptGroup p2) { return p1.OrderKey.CompareTo(p2.OrderKey); });
@@ -661,6 +662,7 @@ namespace TemplateBuilder
         {
             ICSharpCode.TextEditor.TextArea textArea = (ICSharpCode.TextEditor.TextArea)sender;
             template.TemplateText = textArea.Document.TextContent;
+            doc.Data = template.Output;
             doc.Changed = true;
         }
 

@@ -12,9 +12,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -44,6 +47,8 @@ public class Forms implements Serializable {
 	private String name;
 	private String description;
 	private ArrayList<PromptGroup> promptGroups;
+
+	private static boolean result = true;
 	
 	public Forms()
 	{
@@ -253,15 +258,18 @@ public class Forms implements Serializable {
 		}
 	}
 	
-	public void open() {
+	public boolean open() {
 		//Draw a dialog for each prompt group
 		for (PromptGroup promptGroup : promptGroups) {
-			displayDialog(promptGroup, 0);
+			if (!displayDialog(promptGroup, 0)) {
+				return false;
+			}
 		}
-		
+		return true;
 	}
 	
-	private void displayDialog(final PromptGroup promptGroup, final Integer repeatIndex) {
+	private boolean displayDialog(final PromptGroup promptGroup, final Integer repeatIndex) {
+		result = true;
 		try {
 			final Display display = PlatformUI.getWorkbench().getDisplay();
 			final Shell parentShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -288,12 +296,12 @@ public class Forms implements Serializable {
 							if (repeatIndex < promptGroup.getMaxRepeats()) {
 								//If entry is found then present again until no entry
 								String allEnteredText = PromptGroup.getAllValuesByIndex(promptGroup.getName(), repeatIndex);
-								//PluginLogger.logger.info("All entered text for " + promptGroup.getName() + " (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + "): \"" + allEnteredText + "\"");
+								PluginLogger.logger.info("All entered text for " + promptGroup.getName() + " (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + "): \"" + allEnteredText + "\"");
 								if (allEnteredText == "") {
 									//PluginLogger.logger.info("Data entered is blank, so do not auto repeat.");
 									shell.close();
 								}else{
-									//PluginLogger.logger.info("Auto repeat of the " + promptGroup.getName() + " dialog (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + ")");
+									PluginLogger.logger.info("Auto repeat of the " + promptGroup.getName() + " dialog (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + ")");
 									shell.close();
 									displayDialog(promptGroup, repeatIndex + 1);
 								}
@@ -315,7 +323,7 @@ public class Forms implements Serializable {
 					public void handleEvent(Event event) {
 						if (event.widget == buttonRepeat) {
 							if (repeatIndex < promptGroup.getMaxRepeats()) {
-								//PluginLogger.logger.info("Manual repeat of the " + promptGroup.getName() + " dialog (" + repeatIndex + 1 + "/" + promptGroup.getMaxRepeats() + ")");
+								PluginLogger.logger.info("Manual repeat of the " + promptGroup.getName() + " dialog (" + repeatIndex + 1 + "/" + promptGroup.getMaxRepeats() + ")");
 								shell.close();
 								displayDialog(promptGroup, repeatIndex + 1);
 							}
@@ -329,16 +337,18 @@ public class Forms implements Serializable {
 
 			
 			// Enter key acts as the OK button
-			/*Control[] widgets = shell.getChildren();
+			Control[] widgets = shell.getChildren();
 			for (int i = 0; i < widgets.length; i++) {
 				widgets[i].addKeyListener(new KeyAdapter() {
 					public void keyReleased(KeyEvent event) {
 						if (event.character == SWT.ESC) {
+							PluginLogger.logger.info("Hit cancel to leave the form");
+							result = false;
 							shell.close();
 						}
 					}
 				});
-			}*/
+			}
 
 			//Draw all of the input fields
 			promptGroup.render(shell, repeatIndex);
@@ -354,6 +364,7 @@ public class Forms implements Serializable {
 			PluginLogger.logger.info("Failed to render the prompt group");
 			PluginLogger.logger.info(StackTraceUtil.getStackTrace(e));
 		}
+		return result;
 	}
 
     public final void handleReturnPress(Event e) {
