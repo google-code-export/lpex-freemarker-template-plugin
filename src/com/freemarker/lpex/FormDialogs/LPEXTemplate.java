@@ -103,30 +103,28 @@ public class LPEXTemplate {
 	}
 	
 	public static String getFormDataAsString() {
-		String out = "Form Data\r\n";
-
+		String out = "\r\n(root)\r\n";
 		//Loop through each prompt group data element
-	    Iterator pgd_it = LPEXTemplate.formData.entrySet().iterator();
-	    while (pgd_it.hasNext()) {
-	        Map.Entry promptGroup = (Map.Entry)pgd_it.next();
-	        String promptGroupName = (String) promptGroup.getKey();
-	        Map<String, Object> promptGroupMap = (Map<String, Object>) promptGroup.getValue();
-	        out += promptGroupName + "\r\n";
-	        
+	    for (Map.Entry<String, Object> promptGroupData : LPEXTemplate.formData.entrySet()) {
+			String promptGroupName = promptGroupData.getKey();
+			Map<String, Object> promptGroupMap = (Map<String, Object>)promptGroupData.getValue();
 	        //Loop through each collected set of prompt data
+			ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>)promptGroupMap.get("repeats");
 	        int i = 0;
-	        ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroupMap.get("repeats");
+			out += " |" + "\r\n";
+			out += " +-" + promptGroupName + "[" + repeats.size() + "]" + "\r\n";
 			for (Map<String, Object> map:repeats) {
-				out += "   Repeat (" + (i+1)  + "/" + repeats.size() + ")\r\n";
-			    Iterator it = map.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pairs = (Map.Entry)it.next();
-					out += "      " + pairs.getKey() + " : " + pairs.getValue() + "\r\n";
-			    }
+				out += "    |" + "\r\n";
+				out += "    +-repeats(" + (i+1)  + ")\r\n";
+				for (Map.Entry<String, Object> promptData : map.entrySet()) {
+					String key = promptData.getKey();
+					String value = (String)promptData.getValue();
+					out += "       |" + "\r\n";
+					out += "       +-" + key + " = \"" + value + "\"\r\n";
+				}
 			    i++;
 			}
 	    }
-		
 		return out;
 	}
 	

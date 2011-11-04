@@ -16,6 +16,7 @@ public class Actions {
 	public static class insertTemplate implements LpexAction {
 		
 		public void doAction(LpexView view) {
+			LPEXTemplate lpexTemplate = null;
 			try {
 				String baseTemplateFolder = "";
 				try {
@@ -74,7 +75,7 @@ public class Actions {
 				
 				File templateFile = new File(baseTemplateFolder + "/" + templateFolderName + "/" + selectedTemplate + ".ftl");
 				
-				LPEXTemplate lpexTemplate = new LPEXTemplate(templateFile);
+				lpexTemplate = new LPEXTemplate(templateFile);
 				
 				//Parse the form configuration that will dictate the form dialog structure
 				lpexTemplate.buildForm();
@@ -84,8 +85,8 @@ public class Actions {
 				
 				//Present the dialogs for the user to fill out
 				if (lpexTemplate.getForm().open()) {
-					PluginLogger.logger.info(lpexTemplate.getFormDataAsString());
-					PluginLogger.logger.info(lpexTemplate.formData.toString());
+					PluginLogger.logger.info("Forms filled out completely");
+					PluginLogger.logger.info(LPEXTemplate.getFormDataAsString());
 					
 					//Merge the collected data with the template
 					lpexTemplate.merge();
@@ -93,15 +94,22 @@ public class Actions {
 					//Insert the merged template into the cursor position of the current LPEX document
 					lpexManipulator.addBlockTextAtCursorPosition(lpexTemplate.getResult());
 				}else{
-					PluginLogger.logger.info("Escaped the form early");
+					PluginLogger.logger.info("Forms exited early");
 				}
 				
 			} catch (TemplateException e) {
-				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
+				//PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
+				PluginLogger.logger.severe(e.getFTLInstructionStack());
+				view.doDefaultCommand("set messageText " + e.getMessage());
+				PluginLogger.logger.info(LPEXTemplate.getFormDataAsString());
 			} catch (IOException e) {
 				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
+				view.doDefaultCommand("set messageText " + e.getMessage());
+				PluginLogger.logger.info(LPEXTemplate.getFormDataAsString());
 			} catch (Exception e) {
 				PluginLogger.logger.severe(StackTraceUtil.getStackTrace(e));
+				view.doDefaultCommand("set messageText " + e.getMessage());
+				PluginLogger.logger.info(LPEXTemplate.getFormDataAsString());
 			}
 
 			return;

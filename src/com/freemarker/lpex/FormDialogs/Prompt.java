@@ -93,7 +93,7 @@ public class Prompt implements Serializable {
 	}
 
 	public static String getPromptValueAt(String promptGroup, String prompt, Integer index) {
-		Map<String, Object> map = PromptGroup.getRepeatingData(promptGroup).get(index);
+		Map<String, Object> map = PromptGroup.getPromptGroupDataRepeatsArray(promptGroup).get(index);
 		return (String) map.get(prompt);
 	}
 
@@ -288,6 +288,11 @@ public class Prompt implements Serializable {
 				}
 			}else{
 				text.setText(defaultText);
+				//Need to register the default value so that when the data model will be
+				//updated without the user needing to type anything (since it's a default
+				//value after all)
+				//Only do this if a default is configured
+				text.notifyListeners(SWT.Modify, new Event());
 			}
 		} catch (Exception e) {}
 
@@ -298,7 +303,7 @@ public class Prompt implements Serializable {
 				Text text = (Text) event.widget;
 				String pomptHint = (String) text.getData("hint");
 				//Check for non entry
-				if ((text.getText() == pomptHint) ||
+				if ((text.getText().equalsIgnoreCase(pomptHint)) ||
 					(text.getText() == "")) {
 					return;
 				}
@@ -322,7 +327,6 @@ public class Prompt implements Serializable {
 				}
 			}
 		});
-		text.notifyListeners(SWT.Modify, new Event());
 	}
 	
 	private void renderMultilineTextInput() {
@@ -355,6 +359,11 @@ public class Prompt implements Serializable {
 				}
 			}else{
 				text.setText(defaultText);
+				//Need to register the default value so that when the data model will be
+				//updated without the user needing to type anything (since it's a default
+				//value after all)
+				//Only do this if a default is configured
+				text.notifyListeners(SWT.Modify, new Event());
 			}
 		} catch (Exception e) {}
 		
@@ -403,7 +412,6 @@ public class Prompt implements Serializable {
 				}
 			}
 		});
-		text.notifyListeners(SWT.Modify, new Event());
 	}
 	
 	private void renderCheckboxInput() {
@@ -434,6 +442,11 @@ public class Prompt implements Serializable {
 		try {
 			Boolean checked = (Boolean) defaultValue;
 			checkbox.setSelection(checked);
+			//Need to register the default value so that when the data model will be
+			//updated without the user needing to type anything (since it's a default
+			//value after all)
+			//Only do this if a default is configured
+			checkbox.notifyListeners(SWT.Modify, new Event());
 		} catch (Exception e) {}
 	    checkbox.setToolTipText(hint);
 
@@ -468,7 +481,6 @@ public class Prompt implements Serializable {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
-		checkbox.notifyListeners(SWT.Modify, new Event());
 	}
 	
 	private void renderDateInput() {
@@ -535,6 +547,10 @@ public class Prompt implements Serializable {
 				}
 			}
 		});
+		//Need to register the default value so that when the data model will be
+		//updated without the user needing to type anything (since it's a default
+		//value after all)
+		date.notifyListeners(SWT.Modify, new Event());
 	}
 	
     private void addAutoClearingHint(final Text text, final String defaultText) {

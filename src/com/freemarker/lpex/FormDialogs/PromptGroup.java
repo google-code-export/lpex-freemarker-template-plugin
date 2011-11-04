@@ -2,6 +2,7 @@ package com.freemarker.lpex.formdialogs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,54 +24,67 @@ public class PromptGroup implements Serializable {
 		setPrompts(prompts);
 	}
 
-	public static Map<String, Object> getRawData(String promptGroup) {
+	public static Map<String, Object> getPromptGroupData(String promptGroup) {
 		return (Map<String, Object>) LPEXTemplate.formData.get(promptGroup);
 	}
 	
-	public static ArrayList<Map<String, Object>> getRepeatingData(String promptGroup) {
-		Map<String, Object> map = PromptGroup.getData(promptGroup);
+	public static ArrayList<Map<String, Object>> getPromptGroupDataRepeatsArray(String promptGroup) {
+		Map<String, Object> map = PromptGroup.getPromptGroupData(promptGroup);
 		return (ArrayList<Map<String, Object>>) map.get("repeats");
 	}
 	
-	public static Map<String, Object> getDataAt(String promptGroup, Integer index) {
-		return (Map<String, Object>) getRepeatingData(promptGroup).get(index);
+	public static Map<String, Object> getPromptGroupDataByRepeatIndex(String promptGroup, Integer index) {
+		return (Map<String, Object>) getPromptGroupDataRepeatsArray(promptGroup).get(index);
 	}
 	
-	public static Map<String, Object> getData(String promptGroup) {
-		return (Map<String, Object>) getRepeatingData(promptGroup).get(0);
+	public static Map<String, Object> getPrimaryPromptGroupData(String promptGroup) {
+		return (Map<String, Object>) getPromptGroupDataRepeatsArray(promptGroup).get(0);
 	}
 	
-	public static String getAllValues(String promptGroup) {
+	public static String getAllPromptValuesConcatenated(PromptGroup promptGroup) {
 		String allValues = "";
 		try {
-			Map<String, Object> promptGroupMap = (Map<String, Object>) LPEXTemplate.formData.get(promptGroup);
-			ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroupMap.get("repeats");
-			
+			ArrayList<Map<String, Object>> repeats = getPromptGroupDataRepeatsArray(promptGroup.getName());
 			for (Map<String, Object> map:repeats) {
-			    Iterator it = map.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pairs = (Map.Entry)it.next();
-			        allValues += pairs.getValue();
-			    }
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					String key = entry.getKey();
+					String value = (String)entry.getValue();
+					Prompt p = promptGroup.getPromptByName(key);
+					//Ignore the value if it is the same as the hint value
+					if (!value.equalsIgnoreCase(p.getHint())) {
+					    allValues += value;
+					}
+				}
 			}
 		} catch (Exception e) {}
 		return allValues;
 	}
 	
-	public static String getAllValuesByIndex(String promptGroup, Integer index) {
+	public static String getAllPromptValuesConcatenatedByIndex(PromptGroup promptGroup, Integer index) {
 		String allValues = "";
 		try {
-			Map<String, Object> promptGroupMap = (Map<String, Object>) LPEXTemplate.formData.get(promptGroup);
-	        ArrayList<Map<String, Object>> repeats = (ArrayList<Map<String, Object>>) promptGroupMap.get("repeats");
-	        
-			Map<String, Object> map = repeats.get(index);
-		    Iterator it = map.entrySet().iterator();
-		    while (it.hasNext()) {
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        allValues += pairs.getValue();
-		    }
+			Map<String, Object> map = PromptGroup.getPromptGroupDataByRepeatIndex(promptGroup.getName(), index);
+			for (Map.Entry<String, Object> entry : map.entrySet()) {
+				String key = entry.getKey();
+				String value = (String)entry.getValue();
+				Prompt p = promptGroup.getPromptByName(key);
+				//Ignore the value if it is the same as the hint value
+				if (!value.equalsIgnoreCase(p.getHint())) {
+				    allValues += value;
+				}
+			}
 		} catch (Exception e) {}
 		return allValues;
+	}
+	
+	public Prompt getPromptByName(String name) {
+		Prompt prompt = null;
+		for (Prompt p:prompts) {
+			if (p.getName().equalsIgnoreCase(name)) {
+				return p;
+			}
+		}
+		return prompt;
 	}
 
 	public String getName() {

@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.w3c.dom.Document;
@@ -281,6 +282,9 @@ public class Forms implements Serializable {
 			shell.setLocation(200, 200);
 			shell.setLayout(new GridLayout(2, false));
 
+			//Draw all of the input fields
+			promptGroup.render(shell, repeatIndex);
+
 			//Add an OK button
 			final Button buttonOK = new Button(shell, SWT.PUSH);
 			buttonOK.setText("OK");
@@ -293,18 +297,20 @@ public class Forms implements Serializable {
 				public void handleEvent(Event event) {
 					if (event.widget == buttonOK) {
 						if (promptGroup.isRepeatable()) {
-							if (repeatIndex < promptGroup.getMaxRepeats()) {
+							if (repeatIndex + 1 < promptGroup.getMaxRepeats()) {
 								//If entry is found then present again until no entry
-								String allEnteredText = PromptGroup.getAllValuesByIndex(promptGroup.getName(), repeatIndex);
+								String allEnteredText = PromptGroup.getAllPromptValuesConcatenatedByIndex(promptGroup, repeatIndex);
 								PluginLogger.logger.info("All entered text for " + promptGroup.getName() + " (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + "): \"" + allEnteredText + "\"");
 								if (allEnteredText == "") {
-									//PluginLogger.logger.info("Data entered is blank, so do not auto repeat.");
+									PluginLogger.logger.info("Data entered is blank, so do not auto repeat.");
 									shell.close();
 								}else{
 									PluginLogger.logger.info("Auto repeat of the " + promptGroup.getName() + " dialog (" + (repeatIndex + 1) + "/" + promptGroup.getMaxRepeats() + ")");
 									shell.close();
 									displayDialog(promptGroup, repeatIndex + 1);
 								}
+							}else{
+								shell.close();
 							}
 						}else{
 							shell.close();
@@ -334,24 +340,57 @@ public class Forms implements Serializable {
 				Label filler = new Label(shell, SWT.NONE);
 				filler.setLayoutData(gridData);
 			}
-
 			
-			// Enter key acts as the OK button
+			//Disable the automatic dialog exit with escape
+	        shell.addListener(SWT.Traverse, new Listener() {
+	          public void handleEvent(Event e) {
+	            if (e.detail == SWT.TRAVERSE_ESCAPE) {
+	              e.doit = false;
+	            }
+	          }
+	        });
+	        
+	        //Capture the close event so we can control the return boolean
+	    	/*
+	    	shell.addListener (SWT.Close, new Listener () {
+	    		public void handleEvent (Event event) {
+	    			int style = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
+	    			MessageBox messageBox = new MessageBox (shell, style);
+	    			messageBox.setText ("Information");
+	    			messageBox.setMessage ("Are you sure you want to exit?");
+	    			if (messageBox.open() == SWT.YES) {
+	    				result = false;
+						PluginLogger.logger.info("Hit form x to leave the form");
+	    				event.doit = true;
+	    			}else{
+	    				event.doit = false;
+	    			}
+	    		}
+	    	});
+	    	*/
+
+			//Escape exits early with a false response preventing template
+			// output from being inserted into the source member
+	        /*
 			Control[] widgets = shell.getChildren();
 			for (int i = 0; i < widgets.length; i++) {
 				widgets[i].addKeyListener(new KeyAdapter() {
 					public void keyReleased(KeyEvent event) {
 						if (event.character == SWT.ESC) {
-							PluginLogger.logger.info("Hit cancel to leave the form");
-							result = false;
-							shell.close();
+			    			int style = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
+			    			MessageBox messageBox = new MessageBox (shell, style);
+			    			messageBox.setText ("Information");
+			    			messageBox.setMessage ("Are you sure you want to exit?");
+			    			if (messageBox.open() == SWT.YES) {
+								PluginLogger.logger.info("Hit cancel to leave the form");
+								result = false;
+								shell.close();
+			    			}
 						}
 					}
 				});
 			}
-
-			//Draw all of the input fields
-			promptGroup.render(shell, repeatIndex);
+			*/
 
 			//Present to the user
 			shell.open();
