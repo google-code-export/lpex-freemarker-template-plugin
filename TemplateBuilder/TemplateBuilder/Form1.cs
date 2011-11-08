@@ -56,6 +56,7 @@ namespace TemplateBuilder
             //Prompt change handlers
             template.promptRenameHandler = handlePromptRename;
             template.beforePromptDeleteHandler = handleBeforePromptDelete;
+            template.updateProgress = updateProgress;
 
             //Get the recent files from the app settings file
             doc.RecentFiles = TemplateBuilder.Properties.Settings.Default.recentDocuments;
@@ -92,6 +93,7 @@ namespace TemplateBuilder
             template = new Template();
             template.promptRenameHandler = handlePromptRename;
             template.beforePromptDeleteHandler = handleBeforePromptDelete;
+            template.updateProgress = updateProgress;
             refreshTreeView();
             editor_pg.SelectedObject = null;
             templateEditor.Document.TextContent = "";
@@ -161,6 +163,7 @@ namespace TemplateBuilder
             template = new Template();
             template.promptRenameHandler = handlePromptRename;
             template.beforePromptDeleteHandler = handleBeforePromptDelete;
+            template.updateProgress = updateProgress;
             template.RawText = doc.Data;
             updateFormTitle(doc.FileName);
             refreshTreeView();
@@ -859,7 +862,71 @@ namespace TemplateBuilder
             }
             catch { }
         }
+
+        private void validateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Check the template for references to variables that do not exist
+            List<Error> errors = template.CheckAllVariableReferences();
+            displayErrors(errors);
+
+            //TODO Check the model for duplicate fields
+        }
+
+        private void displayErrors(List<Error> errors)
+        {
+            error_lv.Items.Clear();
+            foreach (Error error in errors)
+            {
+                ListViewItem item = new ListViewItem(new []{
+                    "",
+                    error.index.ToString(),
+                    error.description,
+                    error.line.ToString(),
+                    error.column.ToString(),
+                    error.length.ToString()});
+                item.ImageIndex = Icons.BULLET_ERROR;
+                error_lv.Items.Add(item);
+            }
+            errors_tab.Text = "Errors (" + errors.Count + ")";
+            bottomTabs.SelectedIndex = 2;
+        }
+
+        private void error_lv_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection selected = this.error_lv.SelectedItems;
+
+            int line = 0;
+            int column = 0;
+            int length = 0;
+            foreach (ListViewItem item in selected)
+            {
+                line = Int32.Parse(item.SubItems[3].Text);
+                column = Int32.Parse(item.SubItems[4].Text);
+                length = Int32.Parse(item.SubItems[5].Text);
+            }
+            //Highlight the error in the text editor
+            TextLocation startPoint = new TextLocation(column, line - 1);
+            TextLocation endPoint = new TextLocation(column + length, line - 1);
+            this.templateEditor.ActiveTextAreaControl.TextArea.SelectionManager.SetSelection(startPoint, endPoint);
+        }
         #endregion
+    }
+
+    public class Error
+    {
+        public int index;
+        public string description;
+        public int line;
+        public int column;
+        public int length;
+        public Error(int index, string description, int line, int column, int length)
+        {
+            this.index = index;
+            this.description = description;
+            this.line = line;
+            this.column = column;
+            this.length = length;
+        }
     }
 
     public static class Icons
@@ -895,5 +962,6 @@ namespace TemplateBuilder
         public const int CHECKBOX = 28;
         public const int CHECKBOX_OLD = 29;
         public const int APPLICATION_CASCADE = 30;
+        public const int BULLET_ERROR = 33;
     }
 }

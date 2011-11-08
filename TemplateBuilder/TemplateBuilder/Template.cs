@@ -14,6 +14,7 @@ namespace TemplateBuilder
 {
     public delegate void PromptRenameHandler(Prompt prompt, string newName);
     public delegate void BeforePromptDeleteHandler(Prompt prompt);
+    public delegate void UpdateProgress(int percentage, string action);
 
     public class Template : List<PromptGroup>
     {
@@ -22,6 +23,7 @@ namespace TemplateBuilder
 
         public PromptRenameHandler promptRenameHandler { get; set; }
         public BeforePromptDeleteHandler beforePromptDeleteHandler { get; set; }
+        public UpdateProgress updateProgress { get; set; }
 
         public Template()
         {
@@ -376,5 +378,155 @@ namespace TemplateBuilder
             return stringWriter.ToString();
         }
 
+        private void showProgress(int percentage, string action)
+        {
+            if (updateProgress != null)
+                updateProgress(percentage, action);
+        }
+
+        public List<Error> CheckAllVariableReferences()
+        {
+            int errorIndex = 0;
+            List<Error> errors = new List<Error>();
+            //Get all references to a FreeMarker directive
+            List<Match> directives = new List<Match>();
+            //r = new Regex(@"</?#(?i:list)(?<directive_name>[A-Za-z\S]*)\s?(?<directive_body>.*)>", RegexOptions.Multiline);
+            //Regex r = new Regex(@"</?#(?<directive_type>i:)?\s?(?<directive_body>.*)>", RegexOptions.Multiline);
+            Regex r = new Regex(@"<(?<directive_opener>/?#)(?<directive_type>[A-Za-z]*)\s?(?<directive_body>.*)>", RegexOptions.Multiline);
+            Match m = r.Match(this.TemplateText);
+            while (m.Success)
+            {
+                directives.Add(m);
+                m = m.NextMatch();
+            }
+
+            //Get all of the variable references
+            List<Capture> referencedVariables = new List<Capture>();
+            r = new Regex(@"\$\{(?<variable_name>[A-Za-z]+[A-Za-z0-9/./_]*)\}", RegexOptions.Multiline);
+            m = r.Match(this.TemplateText);
+            while (m.Success)
+            {
+                int i = 0;
+                foreach (Capture capture in m.Groups[0].Captures)
+                {
+                    int percentage = (100 / m.Groups[0].Captures.Count) * (i);
+                    showProgress(percentage, "Checking: " + capture.ToString());
+                    referencedVariables.Add(capture);
+                    Console.WriteLine(capture.ToString());
+                    bool match = false;
+                    string[] var = capture.ToString().Replace("$", "").Replace("{", "").Replace("}", "").Split('.');
+                    
+                    foreach (PromptGroup promptGroup in this)
+                    {
+                        if (var[0] == promptGroup.Name)
+                        {
+                            foreach (Prompt prompt in promptGroup)
+                            {
+                                if (var[1] == prompt.Name)
+                                {
+                                    match = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //Check for globals
+                            if (var.Length == 1)
+                            {
+                                if (var[0].Equals("author", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    match = true;
+                                    break;
+                                }
+                                else if (var[0].Equals("date", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    match = true;
+                                    break;
+                                }
+                            }
+
+                            //Check to see if it is in a for loop
+                            bool betweenCheck = false;
+                            Match directiveOpener = null;
+                            foreach (Match directive in directives)
+                            {
+                                if (directive.Groups["directive_type"].ToString().Equals("list", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    if (directive.Groups["directive_opener"].ToString().Equals("#", StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        //Opening directive tag
+                                        if (capture.Index > directive.Index)
+                                        {
+                                            directiveOpener = directive;
+                                            betweenCheck = true;
+                                        }
+                                    }
+                                    if (directive.Groups["directive_opener"].ToString().Equals("/#", StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        //Closing directive tag
+                                        if ((capture.Index < directive.Index) && (betweenCheck))
+                                        {
+                                            //Ex: 
+                                            //<#list parameter.repeats as parm>
+                                            //  ${parm.description}
+                                            //</#list>  
+                                            string directiveBody = directiveOpener.Groups["directive_body"].ToString();
+                                            string[] forParts = directiveBody.Split(' ');
+                                            if (forParts.Length == 3)
+                                            {
+                                                string arrayName = forParts[0].Replace(".repeats", "");
+                                                string localIterName = forParts[2];
+                                                string[] tempName = capture.ToString().Replace(localIterName, arrayName).Replace("$", "").Replace("{", "").Replace("}", "").Split('.');
+                                                if (tempName[0] == promptGroup.Name)
+                                                {
+                                                    foreach (Prompt prompt in promptGroup)
+                                                    {
+                                                        if (tempName[1] == prompt.Name)
+                                                        {
+                                                            match = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                        betweenCheck = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!match)
+                    {
+                        int column = 0;
+                        string section = this.TemplateText.Substring(0, capture.Index);
+                        int line = CountLinesInString(section, out column);
+                        errorIndex++;
+                        errors.Add(new Error(errorIndex,
+                            "Invalid variable referenced: " + capture.ToString(),
+                            line,
+                            capture.Index - column,
+                            capture.Length));
+                    }
+                }
+                i++;
+                m = m.NextMatch();
+            }
+            return errors;
+        }
+
+        private int CountLinesInString(string s, out int curLineStart)
+        {
+            int count = 1;
+            int start = 0;
+            curLineStart = 0;
+            while ((start = s.IndexOf('\n', start)) != -1)
+            {
+                count++;
+                start++;
+                curLineStart = start;
+            }
+            return count;
+        }
     }
 }

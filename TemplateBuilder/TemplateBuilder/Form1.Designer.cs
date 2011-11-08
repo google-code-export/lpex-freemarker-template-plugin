@@ -35,11 +35,19 @@
             this.templateTextTab = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.templateEditor = new ICSharpCode.TextEditor.TextEditorControl();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.bottomTabs = new System.Windows.Forms.TabControl();
             this.sourceView = new System.Windows.Forms.TabPage();
             this.templateSource = new ICSharpCode.TextEditor.TextEditorControl();
             this.logTab = new System.Windows.Forms.TabPage();
             this.logText = new System.Windows.Forms.TextBox();
+            this.errors_tab = new System.Windows.Forms.TabPage();
+            this.error_lv = new System.Windows.Forms.ListView();
+            this.icon = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.index = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.line = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.column = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.length = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -80,6 +88,8 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.validateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuPromptGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.moveUpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,9 +111,10 @@
             this.splitContainer1.SuspendLayout();
             this.templateTextTab.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.bottomTabs.SuspendLayout();
             this.sourceView.SuspendLayout();
             this.logTab.SuspendLayout();
+            this.errors_tab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -159,6 +170,8 @@
             this.imageList1.Images.SetKeyName(29, "checkbox.gif");
             this.imageList1.Images.SetKeyName(30, "application_cascade.png");
             this.imageList1.Images.SetKeyName(31, "page_white_code.png");
+            this.imageList1.Images.SetKeyName(32, "delete.png");
+            this.imageList1.Images.SetKeyName(33, "bullet_error.png");
             // 
             // splitContainer1
             // 
@@ -174,7 +187,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer1.Panel2.Controls.Add(this.bottomTabs);
             this.splitContainer1.Size = new System.Drawing.Size(557, 488);
             this.splitContainer1.SplitterDistance = 329;
             this.splitContainer1.TabIndex = 8;
@@ -214,17 +227,18 @@
             this.templateEditor.Size = new System.Drawing.Size(543, 296);
             this.templateEditor.TabIndex = 0;
             // 
-            // tabControl1
+            // bottomTabs
             // 
-            this.tabControl1.Controls.Add(this.sourceView);
-            this.tabControl1.Controls.Add(this.logTab);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.ImageList = this.imageList1;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(557, 155);
-            this.tabControl1.TabIndex = 1;
+            this.bottomTabs.Controls.Add(this.sourceView);
+            this.bottomTabs.Controls.Add(this.logTab);
+            this.bottomTabs.Controls.Add(this.errors_tab);
+            this.bottomTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bottomTabs.ImageList = this.imageList1;
+            this.bottomTabs.Location = new System.Drawing.Point(0, 0);
+            this.bottomTabs.Name = "bottomTabs";
+            this.bottomTabs.SelectedIndex = 0;
+            this.bottomTabs.Size = new System.Drawing.Size(557, 155);
+            this.bottomTabs.TabIndex = 1;
             // 
             // sourceView
             // 
@@ -265,6 +279,7 @@
             // 
             this.logText.BackColor = System.Drawing.SystemColors.Control;
             this.logText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logText.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logText.Location = new System.Drawing.Point(3, 3);
             this.logText.MaxLength = 5000;
             this.logText.Multiline = true;
@@ -273,6 +288,70 @@
             this.logText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.logText.Size = new System.Drawing.Size(543, 122);
             this.logText.TabIndex = 0;
+            // 
+            // errors_tab
+            // 
+            this.errors_tab.Controls.Add(this.error_lv);
+            this.errors_tab.ImageIndex = 32;
+            this.errors_tab.Location = new System.Drawing.Point(4, 23);
+            this.errors_tab.Name = "errors_tab";
+            this.errors_tab.Padding = new System.Windows.Forms.Padding(3);
+            this.errors_tab.Size = new System.Drawing.Size(549, 128);
+            this.errors_tab.TabIndex = 2;
+            this.errors_tab.Text = "Errors";
+            this.errors_tab.UseVisualStyleBackColor = true;
+            // 
+            // error_lv
+            // 
+            this.error_lv.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.icon,
+            this.index,
+            this.description,
+            this.line,
+            this.column,
+            this.length});
+            this.error_lv.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.error_lv.FullRowSelect = true;
+            this.error_lv.GridLines = true;
+            this.error_lv.Location = new System.Drawing.Point(3, 3);
+            this.error_lv.MultiSelect = false;
+            this.error_lv.Name = "error_lv";
+            this.error_lv.Size = new System.Drawing.Size(543, 122);
+            this.error_lv.SmallImageList = this.imageList1;
+            this.error_lv.TabIndex = 0;
+            this.error_lv.UseCompatibleStateImageBehavior = false;
+            this.error_lv.View = System.Windows.Forms.View.Details;
+            this.error_lv.Click += new System.EventHandler(this.error_lv_Click);
+            // 
+            // icon
+            // 
+            this.icon.Text = "";
+            this.icon.Width = 20;
+            // 
+            // index
+            // 
+            this.index.Text = "";
+            this.index.Width = 20;
+            // 
+            // description
+            // 
+            this.description.Text = "Description";
+            this.description.Width = 350;
+            // 
+            // line
+            // 
+            this.line.Text = "Line";
+            this.line.Width = 75;
+            // 
+            // column
+            // 
+            this.column.Text = "Column";
+            this.column.Width = 75;
+            // 
+            // length
+            // 
+            this.length.Text = "Length";
+            this.length.Width = 75;
             // 
             // splitContainer2
             // 
@@ -648,10 +727,24 @@
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.customizeToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.toolStripMenuItem5,
+            this.validateToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(131, 6);
+            // 
+            // validateToolStripMenuItem
+            // 
+            this.validateToolStripMenuItem.Name = "validateToolStripMenuItem";
+            this.validateToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.validateToolStripMenuItem.Text = "Validate";
+            this.validateToolStripMenuItem.Click += new System.EventHandler(this.validateToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -791,10 +884,11 @@
             this.splitContainer1.ResumeLayout(false);
             this.templateTextTab.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.bottomTabs.ResumeLayout(false);
             this.sourceView.ResumeLayout(false);
             this.logTab.ResumeLayout(false);
             this.logTab.PerformLayout();
+            this.errors_tab.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -880,7 +974,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem insertVariableToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl bottomTabs;
         private System.Windows.Forms.TabPage sourceView;
         private System.Windows.Forms.TabPage logTab;
         private ICSharpCode.TextEditor.TextEditorControl templateSource;
@@ -890,6 +984,16 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox dataModel;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem validateToolStripMenuItem;
+        private System.Windows.Forms.TabPage errors_tab;
+        private System.Windows.Forms.ListView error_lv;
+        private System.Windows.Forms.ColumnHeader icon;
+        private System.Windows.Forms.ColumnHeader index;
+        private System.Windows.Forms.ColumnHeader description;
+        private System.Windows.Forms.ColumnHeader line;
+        private System.Windows.Forms.ColumnHeader column;
+        private System.Windows.Forms.ColumnHeader length;
 
 
     }

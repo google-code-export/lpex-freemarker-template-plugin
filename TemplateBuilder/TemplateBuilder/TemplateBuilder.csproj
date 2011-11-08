@@ -167,6 +167,7 @@
     <Content Include="Resources\control_play_blue.png" />
     <Content Include="Resources\database_add.png" />
     <Content Include="Resources\database_table.png" />
+    <Content Include="Resources\delete.png" />
     <Content Include="Resources\disk.png" />
     <Content Include="Resources\monitor.png" />
     <Content Include="Resources\monitor_add.png" />
