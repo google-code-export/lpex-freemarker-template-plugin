@@ -10,7 +10,7 @@ import com.ibm.lpex.core.LpexView;
 import freemarker.template.TemplateException;
 
 import java.io.*;
-
+ 
 public class Actions {
 
 	public static class insertTemplate implements LpexAction {

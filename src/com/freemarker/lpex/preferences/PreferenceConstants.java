@@ -19,4 +19,8 @@ public class PreferenceConstants {
 
 	public static final String P_PARSER_MAPPINGS = "parserMappings";
 	
+	public static final String P_TEMPLATES_SYNC = "templatesSyncPreference";
+	
+	public static final String P_TEMPLATES_SYNC_DIR = "templatesSyncDirectoryPreference";
+	
 }

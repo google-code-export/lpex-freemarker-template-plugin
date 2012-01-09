@@ -12,19 +12,6 @@
         <hint>checked</hint>
       </prompt>
       <prompt>
-        <type dateFormat="MM/dd/yyyy">date</type>
-        <name>createdate</name>
-        <label>Creation Date</label>
-        <description>Choose a date to use as the creation date of this procedure.</description>
-      </prompt>
-      <prompt>
-        <type>text</type>
-        <name>nameSpace</name>
-        <label>Namespace</label>
-        <description>Enter a namespace</description>
-        <hint>NameSpace</hint>
-      </prompt>
-      <prompt>
         <type>text</type>
         <name>name</name>
         <label>Procedure Name</label>
@@ -78,7 +65,7 @@
       * ${procedure.documentation}
       *
       * @author ${author}
-      * @date   ${procedure.createdate}
+      * @date   ${date}
       *
       <#list parameter.repeats as parm>
       * @param  ${parm.description}
@@ -89,12 +76,12 @@
       */
  
       // BEGIN PROCEDURE
-     p ${procedure.nameSpace}_${procedure.name}...
+     p ${procedure.name}...
      p                 b                   ${procedure.export}
  
       // Procedure Interface
       /////////////////////////////////
-     d ${procedure.nameSpace}_${procedure.name}...
+     d ${procedure.name}...
      d                 pi              n
      <#list parameter.repeats as parm>
      d  pr_${parm.name}...
@@ -113,7 +100,7 @@
        return true;
       /end-free
  
-     p ${procedure.nameSpace}_${procedure.name}...
+     p ${procedure.name}...
      p                 e
       // END PROCEDURE
 

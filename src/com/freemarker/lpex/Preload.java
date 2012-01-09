@@ -9,6 +9,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 
 import com.freemarker.lpex.preferences.PreferenceConstants;
 import com.freemarker.lpex.utils.PluginLogger;
+import com.freemarker.lpex.utils.TemplateDirectorySyncHelper;
 import com.ibm.lpex.alef.LpexPreload;
 import com.ibm.lpex.core.LpexView;
 
@@ -27,6 +28,10 @@ public class Preload implements LpexPreload {
 	private void initPreferences() {
 		Activator.preferenceStore = Activator.getDefault().getPreferenceStore();
 		
+		TemplateDirectorySyncHelper.init(
+				Activator.preferenceStore.getBoolean(PreferenceConstants.P_TEMPLATES_SYNC),
+				Activator.preferenceStore.getString(PreferenceConstants.P_TEMPLATES_SYNC_DIR));
+		
 		try {
 			PluginLogger.setup(Activator.preferenceStore.getString(PreferenceConstants.P_LOG_PATH), Activator.preferenceStore.getString(PreferenceConstants.P_LOG_LEVEL));
 		} catch (IOException e) {}
@@ -41,6 +46,18 @@ public class Preload implements LpexPreload {
 							try {
 								PluginLogger.setPath(event.getNewValue().toString());
 							} catch (IOException e) {}
+						}else if (event.getProperty() == PreferenceConstants.P_TEMPLATES_SYNC_DIR) {
+							try {
+								TemplateDirectorySyncHelper.setSyncDirectoryPath(event.getNewValue().toString());
+							} catch (Exception e) {}
+						}else if (event.getProperty() == PreferenceConstants.P_TEMPLATES_DIR) {
+							try {
+								if (event.getNewValue().toString() == "true") {
+									TemplateDirectorySyncHelper.enableSync();
+								}else{
+									TemplateDirectorySyncHelper.disableSync();
+								}
+							} catch (Exception e) {}
 						}else if (event.getProperty() == PreferenceConstants.P_LOG_LEVEL) {
 							try {
 								PluginLogger.setLevel(event.getNewValue().toString());

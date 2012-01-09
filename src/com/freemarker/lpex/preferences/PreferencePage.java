@@ -33,6 +33,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 				PreferenceConstants.P_TEMPLATES_DIR,
 				"Templates directory:",
 				getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.P_TEMPLATES_SYNC,
+				"Sync templates with central directory:", getFieldEditorParent()));
+		addField(new DirectoryFieldEditor(
+				PreferenceConstants.P_TEMPLATES_SYNC_DIR,
+				"Templates sync directory:",
+				getFieldEditorParent()));
 		addField(new FileFieldEditor(
 				PreferenceConstants.P_LOG_PATH,
 				"Debug log (relative to Eclipse root):", 

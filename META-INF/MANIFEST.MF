@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LPEX FreeMarker Template Plugin
 Bundle-SymbolicName: com.freemarker.lpex;singleton:=true
-Bundle-Version: 0.3.2
+Bundle-Version: 0.4.0
 Bundle-Activator: com.freemarker.lpex.Activator
 Bundle-Vendor: Rob Newton
 Bundle-Localization: plugin

@@ -25,6 +25,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_USE_CURRENT_DATE, true);
 		store.setDefault(PreferenceConstants.P_DATE_FORMAT, "MM/dd/yyyy");
 		store.setDefault(PreferenceConstants.P_PARSER_MAPPINGS, "cl=cl;cle=cl;clle=cl;clp=cl;cbl=cobol;c++=cpp;h=cpp;dds=dds;dspf=dds;lf=dds;pf=dds;prtf=dds;css=html;htm=html;html=html;html-ss=html;xhtml=html;jardesc=java;jav=java;java=java;jhtml=java;jpage=java;jsp=java;pl=perl;py=python;rex=rexx;rexx=rexx;ilerpg=rpg;ilerpgsql=rpg;mbr=rpg;rpg=rpg;rpg36=rpg;rpg38=rpg;rpgle=rpg;rpgleinc=rpg;sqlrpg=rpg;sqlrpgle=rpg;sqlrple=rpg;pftbl=sql;sql=sql;sqlc=sql;ini=unknown;inl=unknown;dtd=xml;schxmi=xml;xmi=xml;xml=xml;xsd=xml;xsl=xml;");
+		store.setDefault(PreferenceConstants.P_TEMPLATES_SYNC, true);
+		store.setDefault(PreferenceConstants.P_TEMPLATES_SYNC_DIR, "\\\\develop\\root\\LPEXTemplates");
 	}
 
 }
