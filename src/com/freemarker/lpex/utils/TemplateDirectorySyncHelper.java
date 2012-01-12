@@ -60,10 +60,11 @@ public class TemplateDirectorySyncHelper {
 			if (!new File(baseTemplateFolder).exists())
 			{
 				PluginLogger.logger.warning("No template directory set");
+				return;
 			}
 		} catch (Exception e) {
 			PluginLogger.logger.warning(StackTraceUtil.getStackTrace(e));
-			baseTemplateFolder = "c:/templates";
+			return;
 		}
 		if (baseTemplateFolder == "") {
 			PluginLogger.logger.warning("No template directory set");
@@ -75,12 +76,13 @@ public class TemplateDirectorySyncHelper {
 			syncTemplateFolder = Activator.preferenceStore.getString(PreferenceConstants.P_TEMPLATES_SYNC_DIR);
 			if (!new File(syncTemplateFolder).exists())
 			{
-				PluginLogger.logger.warning("No sync template directory set");
+			    PluginLogger.logger.warning("No sync template directory set");
+			    return;
 			}
 		} catch (Exception e) {
 			PluginLogger.logger.warning(StackTraceUtil.getStackTrace(e));
 			PluginLogger.logger.warning("No sync template directory set");
-			syncTemplateFolder = "";
+			return;
 		}
 		if (syncTemplateFolder == "") {
 			PluginLogger.logger.warning("No sync template directory set");
